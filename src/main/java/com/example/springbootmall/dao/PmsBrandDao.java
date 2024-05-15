@@ -1,6 +1,7 @@
 package com.example.springbootmall.dao;
 
 import com.example.springbootmall.model.PmsBrand;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository

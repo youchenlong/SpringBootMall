@@ -1,4 +1,4 @@
-package com.example.springbootmall.services;
+package com.example.springbootmall.service;
 
 import com.example.springbootmall.model.PmsBrand;
 

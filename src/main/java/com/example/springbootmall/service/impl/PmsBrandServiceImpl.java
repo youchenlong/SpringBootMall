@@ -1,8 +1,8 @@
-package com.example.springbootmall.services.impl;
+package com.example.springbootmall.service.impl;
 
 import com.example.springbootmall.dao.PmsBrandDao;
 import com.example.springbootmall.model.PmsBrand;
-import com.example.springbootmall.services.PmsBrandService;
+import com.example.springbootmall.service.PmsBrandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
