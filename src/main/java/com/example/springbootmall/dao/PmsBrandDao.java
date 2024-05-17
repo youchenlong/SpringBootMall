@@ -1,8 +1,9 @@
 package com.example.springbootmall.dao;
 
 import com.example.springbootmall.model.PmsBrand;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface PmsBrandDao {
@@ -14,4 +15,6 @@ public interface PmsBrandDao {
     int deleteByPrimaryKey(Long id);
 
     PmsBrand selectByPrimaryKey(Long id);
+
+    List<PmsBrand> selectAll();
 }

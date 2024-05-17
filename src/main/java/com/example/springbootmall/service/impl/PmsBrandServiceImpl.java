@@ -3,11 +3,17 @@ package com.example.springbootmall.service.impl;
 import com.example.springbootmall.dao.PmsBrandDao;
 import com.example.springbootmall.model.PmsBrand;
 import com.example.springbootmall.service.PmsBrandService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PmsBrandServiceImpl implements PmsBrandService {
+
+    private static final Logger log = LoggerFactory.getLogger(PmsBrandServiceImpl.class);
 
     @Autowired
     private PmsBrandDao pmsBrandDao;
@@ -30,6 +36,13 @@ public class PmsBrandServiceImpl implements PmsBrandService {
 
     @Override
     public PmsBrand selectBrandById(Long id) {
+        log.info("selectBrandById id:{}", id);
         return pmsBrandDao.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public List<PmsBrand> selectAllBrand() {
+        log.info("selectAllBrand");
+        return pmsBrandDao.selectAll();
     }
 }

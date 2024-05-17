@@ -29,7 +29,8 @@
     </delete>
 
     <select id="selectByPrimaryKey" resultType="com.example.springbootmall.model.PmsBrand">
-        select name,
+        select id,
+               name,
                first_letter,
                sort,
                factory_status,
@@ -41,5 +42,20 @@
                brand_story
         from pms_brand
         where id = #{id}
+    </select>
+
+    <select id="selectAll" resultType="com.example.springbootmall.model.PmsBrand">
+        select id,
+               name,
+               first_letter,
+               sort,
+               factory_status,
+               show_status,
+               product_count,
+               product_comment_count,
+               logo,
+               big_pic,
+               brand_story
+        from pms_brand
     </select>
 </mapper>

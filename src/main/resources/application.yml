@@ -14,3 +14,16 @@ mybatis:
   mapper-locations: classpath:dao/*.xml
   configuration:
     map-underscore-to-camel-case: true
+
+# 异步线程配置
+async:
+  executor:
+    thread:
+      # 核心线程数
+      core_pool_size: 1000
+      # 最大线程数
+      max_pool_size: 2000
+      # 队列大小
+      queue_capacity: 10000
+      name:
+        prefix: async-service-
