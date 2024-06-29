@@ -1,7 +1,7 @@
 package com.example.springbootmall.controller;
 
 import com.example.springbootmall.component.CommonResult;
-import com.example.springbootmall.service.UmsMemberService;
+import com.example.springbootmall.service.UmsUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Api(tags = "UmsMemberController")
-@Tag(name = "UmsMemberController", description = "会员登录注册管理")
+@Api(tags = "UmsUserController")
+@Tag(name = "UmsUserController", description = "会员登录注册管理")
 @RequestMapping("/member")
-public class UmsMemberController {
+public class UmsUserController {
     @Autowired
-    private UmsMemberService umsMemberService;
+    private UmsUserService umsMemberService;
 
-    private static final Logger log = LoggerFactory.getLogger(UmsMemberController.class);
+    private static final Logger log = LoggerFactory.getLogger(UmsUserController.class);
 
     @ApiOperation("获取验证码")
     @RequestMapping(value = "/generateAuthCode", method = RequestMethod.GET)

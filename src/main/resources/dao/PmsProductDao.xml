@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.springbootmall.dao.PmsProductDao">
+    <insert id="insert">
+        insert into pms_product(brand_id, name, description, keywords, price, sale, stock)
+        values (#{brandId}, #{name}, #{description}, #{keywords}, #{price}, #{sale}, #{stock})
+        <selectKey keyColumn="id" keyProperty="id" resultType="long" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <update id="update">
+        update pms_product
+        set id = #{id},
+            brand_id = #{brandId},
+            name = #{name},
+            description = #{description},
+            keywords = ${keywords},
+            price = #{price},
+            sale = #{sale},
+            stock = #{stock}
+    </update>
+
+    <delete id="deleteByPrimaryKey">
+        delete from pms_product where id = #{id}
+    </delete>
+
+    <select id="selectByPrimaryKey" resultType="com.example.springbootmall.model.PmsProduct">
+        select id,
+               brand_id,
+               name,
+               description,
+               keywords,
+               price,
+               sale,
+               stock
+        from pms_product
+        where id = #{id}
+    </select>
+
+    <select id="selectAll" resultType="com.example.springbootmall.model.PmsProduct">
+        select id,
+               brand_id,
+               name,
+               description,
+               keywords,
+               price,
+               sale,
+               stock
+        from pms_product
+    </select>
+</mapper>

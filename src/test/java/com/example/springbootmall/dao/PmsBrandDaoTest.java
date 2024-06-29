@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+
 @SpringBootTest
 class PmsBrandDaoTest {
 
@@ -18,16 +20,10 @@ class PmsBrandDaoTest {
     @Test
     void insert() {
         PmsBrand pmsBrand = new PmsBrand();
-        pmsBrand.setName("三星");
-        pmsBrand.setFirstLetter("S");
-        pmsBrand.setSort(100);
+        pmsBrand.setName("万和");
+        pmsBrand.setFirstLetter("W");
         pmsBrand.setFactoryStatus(1);
-        pmsBrand.setShowStatus(1);
-        pmsBrand.setProductCount(100);
-        pmsBrand.setProductCommentCount(100);
-        pmsBrand.setLogo("http://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/images/20200607/57201b47N7bf15715.jpg");
-        pmsBrand.setBigPic("http://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/images/20221108/sanxing_banner_01.png");
-        pmsBrand.setBrandStory("三星集团（英文：SAMSUNG、韩文：삼성）是韩国最大的跨国企业集团，三星集团包括众多的国际下属企业，旗下子公司有：三星电子、三星物产、三星人寿保险等，业务涉及电子、金融、机械、化学等众多领域。");
+        pmsBrand.setBrandStory("万和成立于1993年8月，总部位于广东顺德国家级高新技术开发区内，是国内生产规模最大的燃气具专业制造企业，也是中国燃气具发展战略的首倡者和推动者、中国五金制品协会燃气用具分会第三届理事长单位。");
         int result = pmsBrandDao.insert(pmsBrand);
         log.info("insert id={}, result:{}", pmsBrand.getId(), result);
     }
@@ -35,30 +31,32 @@ class PmsBrandDaoTest {
     @Test
     void updateByPrimaryKey() {
         PmsBrand pmsBrand = new PmsBrand();
-        pmsBrand.setId(23L);
-        pmsBrand.setName("三星");
-        pmsBrand.setFirstLetter("S");
-        pmsBrand.setSort(100);
+        pmsBrand.setId(1L);
+        pmsBrand.setName("万和");
+        pmsBrand.setFirstLetter("W");
         pmsBrand.setFactoryStatus(1);
-        pmsBrand.setShowStatus(1);
-        pmsBrand.setProductCount(50);
-        pmsBrand.setProductCommentCount(100);
-        pmsBrand.setLogo("http://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/images/20200607/57201b47N7bf15715.jpg");
-        pmsBrand.setBigPic("http://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/images/20221108/sanxing_banner_01.png");
-        pmsBrand.setBrandStory("三星集团（英文：SAMSUNG、韩文：삼성）是韩国最大的跨国企业集团，三星集团包括众多的国际下属企业，旗下子公司有：三星电子、三星物产、三星人寿保险等，业务涉及电子、金融、机械、化学等众多领域。");
+        pmsBrand.setBrandStory("万和成立于1993年8月，总部位于广东顺德国家级高新技术开发区内，是国内生产规模最大的燃气具专业制造企业，也是中国燃气具发展战略的首倡者和推动者、中国五金制品协会燃气用具分会第三届理事长单位。");
         int result = pmsBrandDao.update(pmsBrand);
         log.info("update id={}, result:{}", pmsBrand.getId(), result);
     }
 
     @Test
+    void deleteByPrimaryKey() {
+        int result = pmsBrandDao.deleteByPrimaryKey(1L);
+        log.info("delete id={}, result:{}", 1L, result);
+    }
+
+    @Test
     void selectByPrimaryKey() {
-        PmsBrand pmsBrand = pmsBrandDao.selectByPrimaryKey(23L);
+        PmsBrand pmsBrand = pmsBrandDao.selectByPrimaryKey(1L);
         log.info("select id={}, result:{}", pmsBrand.getId(), pmsBrand);
     }
 
     @Test
-    void deleteByPrimaryKey() {
-        int result = pmsBrandDao.deleteByPrimaryKey(23L);
-        log.info("delete id={}, result:{}", 23L, result);
+    void selectAll() {
+        List<PmsBrand> pmsBrands = pmsBrandDao.selectAll();
+        for (PmsBrand pmsBrand : pmsBrands) {
+            log.info("select id={}, result:{}", pmsBrand.getId(), pmsBrand);
+        }
     }
 }

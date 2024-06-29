@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.springbootmall.dao.OmsCartItemDao">
+    <insert id="insert">
+        insert into oms_cart_item(cart_id, product_id, product_quantity)
+        values (#{cartId}, #{productId}, #{productQuantity})
+        <selectKey keyColumn="id" keyProperty="id" resultType="long" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <update id="update">
+        update oms_cart_item
+        set id = #{id},
+            cart_id = #{cartId},
+            product_id = #{productId},
+            product_quantity = #{productQuantity}
+    </update>
+
+    <delete id="deleteByPrimaryKey">
+        delete from oms_cart_item where id=#{id}
+    </delete>
+
+    <select id="selectByPrimaryKey" resultType="com.example.springbootmall.model.OmsCartItem">
+        select id,
+               cart_id,
+               product_id,
+               product_quantity
+        from oms_cart_item
+        where id = #{id}
+    </select>
+
+    <select id="selectAll" resultType="com.example.springbootmall.model.OmsCartItem">
+        select id,
+               cart_id,
+               product_id,
+               product_quantity
+        from oms_cart_item
+    </select>
+</mapper>

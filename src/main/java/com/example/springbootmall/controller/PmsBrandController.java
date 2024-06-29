@@ -22,16 +22,16 @@ public class PmsBrandController {
     private static final Logger log = LoggerFactory.getLogger(PmsBrandController.class);
 
     @ApiOperation("添加品牌")
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public CommonResult createBrand(@RequestBody PmsBrand brand) {
-        int count = brandService.createBrand(brand);
+    @RequestMapping(value = "/insert", method = RequestMethod.POST)
+    public CommonResult insertBrand(@RequestBody PmsBrand brand) {
+        int count = brandService.insertBrand(brand);
         if (count > 0) {
-            log.info("create brand success: {}", brand);
+            log.info("insert brand success: {}", brand);
             return CommonResult.success(brand);
         }
         else{
-            log.info("create brand failed: {}", brand);
-            return CommonResult.failed("failed");
+            log.info("insert brand fail: {}", brand);
+            return CommonResult.failed("fail");
         }
     }
 
@@ -44,22 +44,22 @@ public class PmsBrandController {
             return CommonResult.success(brand);
         }
         else{
-            log.info("update brand failed: {}", brand);
-            return CommonResult.failed("failed");
+            log.info("update brand fail: {}", brand);
+            return CommonResult.failed("fail");
         }
     }
 
     @ApiOperation("删除品牌")
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
-    public CommonResult deleteBrand(@PathVariable("id") Long id) {
+    public CommonResult deleteBrandById(@PathVariable("id") Long id) {
         int count = brandService.deleteBrandById(id);
         if (count > 0) {
             log.info("delete brand success: {}", id);
             return CommonResult.success(null);
         }
         else{
-            log.info("delete brand failed: {}", id);
-            return CommonResult.failed("failed");
+            log.info("delete brand fail: {}", id);
+            return CommonResult.failed("fail");
         }
     }
 

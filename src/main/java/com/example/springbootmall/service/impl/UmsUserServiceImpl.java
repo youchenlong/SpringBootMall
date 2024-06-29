@@ -2,7 +2,7 @@ package com.example.springbootmall.service.impl;
 
 import com.example.springbootmall.component.CommonResult;
 import com.example.springbootmall.service.RedisService;
-import com.example.springbootmall.service.UmsMemberService;
+import com.example.springbootmall.service.UmsUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.Random;
 
 @Service
-public class UmsMemberServiceImpl implements UmsMemberService {
+public class UmsUserServiceImpl implements UmsUserService {
     @Autowired
     private RedisService redisService;
     @Value("${redis.key.prefix.authCode}")
@@ -20,7 +20,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     @Value("${redis.key.expire.authCode}")
     private Long REDIS_KEY_EXPIRE_AUTH_CODE;
 
-    private static final Logger log = LoggerFactory.getLogger(UmsMemberServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(UmsUserServiceImpl.class);
 
     @Override
     public CommonResult generateAuthCode(String telephone){

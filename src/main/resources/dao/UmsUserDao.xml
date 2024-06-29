@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.springbootmall.dao.UmsUserDao">
+    <insert id="insert">
+        insert into ums_user(username, password, nickname, phone, email, gender, create_time, birthday)
+        values (#{username}, #{password}, #{nickname}, #{phone}, #{email}, #{gender}, #{createTime}, #{birthday})
+        <selectKey keyColumn="id" keyProperty="id" resultType="long" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <update id="update">
+        update ums_user
+        set id = #{id},
+            username = #{username},
+            password = #{password},
+            nickname = #{nickname},
+            phone = #{phone},
+            email = #{email},
+            gender = #{gender},
+            create_time = #{createTime},
+            birthday = #{birthday}
+    </update>
+
+    <delete id="deleteByPrimaryKey">
+        delete from ums_user where id=#{id}
+    </delete>
+
+    <select id="selectByPrimaryKey" resultType="com.example.springbootmall.model.UmsUser">
+        select id,
+               username,
+               password,
+               nickname,
+               phone,
+               email,
+               gender,
+               create_time,
+               birthday
+        from ums_user
+        where id = #{id}
+    </select>
+
+    <select id="selectAll" resultType="com.example.springbootmall.model.UmsUser">
+        select id,
+               username,
+               password,
+               nickname,
+               phone,
+               email,
+               gender,
+               create_time,
+               birthday
+        from ums_user
+    </select>
+</mapper>

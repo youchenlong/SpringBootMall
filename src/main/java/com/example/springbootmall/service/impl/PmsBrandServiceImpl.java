@@ -19,14 +19,14 @@ public class PmsBrandServiceImpl implements PmsBrandService {
     private PmsBrandDao pmsBrandDao;
 
     @Override
-    public int createBrand(PmsBrand pmsBrand) {
-        return pmsBrandDao.insert(pmsBrand);
+    public int insertBrand(PmsBrand brand) {
+        return pmsBrandDao.insert(brand);
     }
 
     @Override
-    public int updateBrand(Long id, PmsBrand pmsBrand) {
-        pmsBrand.setId(id);
-        return pmsBrandDao.update(pmsBrand);
+    public int updateBrand(Long id, PmsBrand brand) {
+        brand.setId(id);
+        return pmsBrandDao.update(brand);
     }
 
     @Override

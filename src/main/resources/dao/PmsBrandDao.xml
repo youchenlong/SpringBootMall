@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.example.springbootmall.dao.PmsBrandDao">
     <insert id="insert">
-        insert into pms_brand(name, first_letter, sort, factory_status, show_status, product_count, product_comment_count, logo, big_pic, brand_story)
-        values (#{name}, #{firstLetter}, #{sort}, #{factoryStatus}, #{showStatus}, #{productCount}, #{productCommentCount}, #{logo}, #{bigPic}, #{brandStory})
+        insert into pms_brand(name, first_letter, factory_status, brand_story)
+        values (#{name}, #{firstLetter}, #{factoryStatus}, #{brandStory})
         <selectKey keyColumn="id" keyProperty="id" resultType="long" order="AFTER">
             SELECT LAST_INSERT_ID()
         </selectKey>
@@ -11,17 +11,11 @@
 
     <update id="update">
         update pms_brand
-        set name = #{name},
+        set id = #{id},
+            name = #{name},
             first_letter = #{firstLetter},
-            sort = #{sort},
             factory_status = #{factoryStatus},
-            show_status = #{showStatus},
-            product_count = #{productCount},
-            product_comment_count = #{productCommentCount},
-            logo = #{logo},
-            big_pic = #{bigPic},
             brand_story = #{brandStory}
-        where id = #{id}
     </update>
 
     <delete id="deleteByPrimaryKey">
@@ -32,13 +26,7 @@
         select id,
                name,
                first_letter,
-               sort,
                factory_status,
-               show_status,
-               product_count,
-               product_comment_count,
-               logo,
-               big_pic,
                brand_story
         from pms_brand
         where id = #{id}
@@ -48,13 +36,7 @@
         select id,
                name,
                first_letter,
-               sort,
                factory_status,
-               show_status,
-               product_count,
-               product_comment_count,
-               logo,
-               big_pic,
                brand_story
         from pms_brand
     </select>

@@ -8,9 +8,9 @@ import java.util.List;
 @Repository
 public interface PmsBrandDao {
 
-    int insert(PmsBrand row);
+    int insert(PmsBrand record);
 
-    int update(PmsBrand row);
+    int update(PmsBrand record);
 
     int deleteByPrimaryKey(Long id);
 
