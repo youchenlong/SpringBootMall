@@ -1,8 +1,9 @@
 # Welcome to SpringBootMall
 
 ### 数据库
+
 * ER图
-![ER](docs/img/ER.png)
+  ![ER](docs/img/ER.png)
 * 数据表
   * pms_brand (id, name, first_letter, factory_status, brand_story)
     * factory_status: 是否为品牌制造商：0->不是；1->是
@@ -16,27 +17,60 @@
   * oms_cart (id, user_id, status, create_time, update_time)
     * status: 购物车状态：0->正常；1->已删除
   * oms_cart_item (id, cart_id, product_id, product_quantity)
-  * 创建数据库并导入数据
-    ```shell
-    create database mall_tiny;
-    use mall_tiny;
-    source mall_tiny_filled.sql
-    ```
-
+* 创建数据库并导入数据
+  ```shell
+  create database mall_tiny;
+  use mall_tiny;
+  source mall_tiny_filled.sql;
+  ```
+* 测试
+  * PmsBrandDaoTest -> PmsProductDaoTest -> UmsUserDaoTest -> OmsCartDaoTest -> OmsCartItemDaoTest -> OmsOrderDaoTest -> OmsOrderItemDaoTest
 
 ### 业务需求
-* 商品管理
-  * 添加品牌，删除品牌，更新品牌信息，查询品牌信息
-  * 添加商品，删除商品，更新商品信息，查询商品信息
-  * 搜索商品
-    - [ ] ElasticSearch
-* 订单管理
-  * 创建订单，删除订单，更新订单信息，查询订单信息
-  * 创建购物车，删除购物车，更新购物车信息，查询购物车信息
-* 用户管理
-  * 添加用户，删除用户，更新用户信息，查询用户信息
-  * 获取验证码，判断验证码是否正确
-    - [x] Redis 
 
-### 测试用例
-* PmsBrandDaoTest -> PmsProductDaoTest -> UmsUserDaoTest -> OmsCartDaoTest -> OmsCartItemDaoTest -> OmsOrderDaoTest -> OmsOrderItemDaoTest 
+* 商品管理
+  * 品牌增删改查
+  * 商品增删改查
+  * 商品缓存
+    - [ ]  Redis(String)
+  * 热门商品
+    - [ ]  Redis(Sorted Set)
+  * 商品检索
+    - [ ]  ElasticSearch
+* 订单管理
+  * 订单增删改查
+  * 购物车
+    - [ ]  Reids(Hash)
+  * 订单超时处理
+    - [ ]  Redis(过期键)
+    - [ ]  RabbitMQ(消息TTL+死信Exchange)
+  * 限时抢购
+    - [ ]  Redis(过期键) + RabbitMQ(消息TTL+死信Exchange)
+* 用户管理
+  * 用户增删改查
+  * 用户认证（获取验证码，判断验证码是否正确）
+    - [X]  Redis(过期键)
+
+### 练习
+
+* MySQL
+  - [X]  MySQL增删改查？
+  - [ ]  索引？
+  - [ ]  读写分离？
+  - [ ]  分库分表？
+* Redis
+  - [ ]  Redis的应用场景？
+  - [ ]  内存管理？
+    - 删除过期键 -> 定期删除
+    - 内存淘汰机制 -> allkeys-lru
+  - [ ]  持久化？
+    - AOF
+  - [ ]  一致性？
+    - Cache Aside Pattern -> 异步重试(消息队列)
+  - [ ]  缓存穿透、缓存雪崩？
+  - [ ]  高可用？
+    - 哨兵模式
+* RabbitMQ
+  - [ ]  RabbitMQ的应用场景？
+* ElasticSearch
+  - [ ]  ElasticSearch的应用场景？
