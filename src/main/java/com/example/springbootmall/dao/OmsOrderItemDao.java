@@ -1,9 +1,11 @@
 package com.example.springbootmall.dao;
 
 import com.example.springbootmall.model.OmsOrderItem;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface OmsOrderItemDao {
     int insert(OmsOrderItem record);
 

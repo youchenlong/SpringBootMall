@@ -4,9 +4,11 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
+
 @Data
 @EqualsAndHashCode
-public class OmsOrderItem {
+public class OmsOrderItem implements Serializable {
     private Long id;
     private Long orderId;
     private Long productId;

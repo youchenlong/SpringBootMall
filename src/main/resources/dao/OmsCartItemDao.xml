@@ -30,6 +30,15 @@
         where id = #{id}
     </select>
 
+    <select id="selectByCartId" resultType="com.example.springbootmall.model.OmsCartItem">
+        select id,
+               cart_id,
+               product_id,
+               product_quantity
+        from oms_cart_item
+        where cart_id = #{cartId}
+    </select>
+
     <select id="selectAll" resultType="com.example.springbootmall.model.OmsCartItem">
         select id,
                cart_id,

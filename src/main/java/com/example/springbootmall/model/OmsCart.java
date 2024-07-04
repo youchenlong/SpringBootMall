@@ -4,11 +4,12 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
 @EqualsAndHashCode
-public class OmsCart {
+public class OmsCart implements Serializable {
     private Long id;
     private Long userId;
     @ApiModelProperty(value = "购物车状态：0->正常；1->已删除")

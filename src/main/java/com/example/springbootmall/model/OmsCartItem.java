@@ -4,9 +4,11 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
+
 @Data
 @EqualsAndHashCode
-public class OmsCartItem {
+public class OmsCartItem implements Serializable {
     private Long id;
     private Long cartId;
     private Long productId;

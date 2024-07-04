@@ -4,11 +4,12 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
 @EqualsAndHashCode
-public class UmsUser {
+public class UmsUser implements Serializable {
     private Long id;
     @ApiModelProperty(value = "用户名")
     private String username;

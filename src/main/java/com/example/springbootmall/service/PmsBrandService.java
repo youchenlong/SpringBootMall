@@ -5,13 +5,13 @@ import com.example.springbootmall.model.PmsBrand;
 import java.util.List;
 
 public interface PmsBrandService {
-    int insertBrand(PmsBrand brand);
+    int addBrand(PmsBrand brand);
 
-    int updateBrand(Long id, PmsBrand brand);
+    int updateBrand(Long brandId, PmsBrand brand);
 
-    int deleteBrandById(Long id);
+    int removeBrandById(Long brandId);
 
-    PmsBrand selectBrandById(Long id);
+    PmsBrand getBrandById(Long brandId);
 
-    List<PmsBrand> selectAllBrand();
+    List<PmsBrand> getAllBrand();
 }

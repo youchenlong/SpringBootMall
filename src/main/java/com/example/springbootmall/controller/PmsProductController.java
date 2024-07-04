@@ -22,50 +22,58 @@ public class PmsProductController {
     private static final Logger log = LoggerFactory.getLogger(PmsProductController.class);
 
     @ApiOperation("添加商品")
-    @RequestMapping(value = "/insert", method = RequestMethod.POST)
-    public CommonResult insertProduct(@RequestBody PmsProduct product) {
-        int count = productService.insertProduct(product);
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    public CommonResult<PmsProduct> addProduct(@RequestBody PmsProduct product) {
+        int count = productService.addProduct(product);
         if (count > 0) {
-            log.info("insert product success: {}", product);
+            log.info("insert product successfully: {}", product);
             return CommonResult.success(product);
         }
         else{
-            log.info("insert product fail: {}", product);
-            return CommonResult.failed("fail");
+            log.info("insert product failed");
+            return CommonResult.failed("failed");
         }
     }
 
     @ApiOperation("更新商品信息")
     @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
-    public CommonResult updateProduct(@PathVariable("id") Long id, @RequestBody PmsProduct product) {
+    public CommonResult<PmsProduct> updateProduct(@PathVariable("id") Long id, @RequestBody PmsProduct product) {
         int count = productService.updateProduct(id, product);
         if (count > 0) {
-            log.info("update product success: {}", product);
+            log.info("update product successfully: {}", product);
             return CommonResult.success(product);
         }
         else{
-            log.info("update product fail: {}", product);
-            return CommonResult.failed("fail");
+            log.info("update product failed");
+            return CommonResult.failed("failed");
         }
     }
 
     @ApiOperation("删除商品")
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
-    public CommonResult deleteProductById(@PathVariable("id") Long id) {
-        int count = productService.deleteProductById(id);
+    @RequestMapping(value = "/remove/{id}", method = RequestMethod.GET)
+    public CommonResult<PmsProduct> removeProductById(@PathVariable("id") Long id) {
+        int count = productService.removeProductById(id);
         if (count > 0) {
-            log.info("delete product success: {}", id);
-            return CommonResult.success(id);
+            log.info("delete product successfully: {}", id);
+            return CommonResult.success(null);
         }
         else{
-            log.info("delete product fail: {}", id);
-            return CommonResult.failed("fail");
+            log.info("delete product failed");
+            return CommonResult.failed("failed");
         }
     }
 
     @ApiOperation("查询商品信息")
-    @RequestMapping(value = "/select/{id}", method = RequestMethod.GET)
-    public CommonResult selectProductById(@PathVariable("id") Long id) {
-        return CommonResult.success(productService.selectProductById(id));
+    @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
+    public CommonResult<PmsProduct> getProductById(@PathVariable("id") Long id) {
+        PmsProduct product = productService.getProductById(id);
+        if (product != null) {
+            log.info("select product successfully: {}", product);
+            return CommonResult.success(product);
+        }
+        else{
+            log.info("select product failed");
+            return CommonResult.failed("failed");
+        }
     }
 }

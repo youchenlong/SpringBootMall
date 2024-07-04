@@ -15,7 +15,7 @@
             brand_id = #{brandId},
             name = #{name},
             description = #{description},
-            keywords = ${keywords},
+            keywords = #{keywords},
             price = #{price},
             sale = #{sale},
             stock = #{stock}

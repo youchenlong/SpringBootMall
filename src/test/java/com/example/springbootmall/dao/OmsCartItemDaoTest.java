@@ -24,6 +24,7 @@ class OmsCartItemDaoTest {
     @Test
     void insert() {
         OmsCartItem omsCartItem = new OmsCartItem();
+        omsCartItem.setId(1L);
         omsCartItem.setCartId(1L);
         omsCartItem.setProductId(1L);
         omsCartItem.setProductQuantity(1);

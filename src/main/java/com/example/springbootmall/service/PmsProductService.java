@@ -5,9 +5,9 @@ import com.example.springbootmall.model.PmsProduct;
 import java.util.List;
 
 public interface PmsProductService {
-    int insertProduct(PmsProduct pmsProduct);
-    int updateProduct(Long id, PmsProduct pmsProduct);
-    int deleteProductById(Long id);
-    PmsProduct selectProductById(Long id);
-    List<PmsProduct> selectAllProduct();
+    int addProduct(PmsProduct pmsProduct);
+    int updateProduct(Long productId, PmsProduct pmsProduct);
+    int removeProductById(Long productId);
+    PmsProduct getProductById(Long productId);
+    List<PmsProduct> getAllProduct();
 }

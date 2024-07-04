@@ -30,9 +30,17 @@ spring:
 redis:
   key:
     prefix:
-      authCode: "authCode:"
+      auth: "auth:"
+      brand: "brand:"
+      product: "product:"
+      cart: "cart:"
     expire:
-      authCode: 120 # 验证码超时时间
+      auth: 120 # 验证码超时时间
+      brand: 120 # 品牌超时时间
+      product: 120 # 商品超时时间
+      cart: 120 # 购物车超时时间
+
+
 
 mybatis:
   mapper-locations: classpath:dao/*.xml

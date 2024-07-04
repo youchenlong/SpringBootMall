@@ -25,8 +25,8 @@ public class UmsUserController {
 
     @ApiOperation("获取验证码")
     @RequestMapping(value = "/generateAuthCode", method = RequestMethod.GET)
-    public CommonResult generateAuthCode(@RequestParam("telephone") String telephone) {
-        CommonResult result = umsMemberService.generateAuthCode(telephone);
+    public CommonResult<String> generateAuthCode(@RequestParam("telephone") String telephone) {
+        CommonResult<String> result = umsMemberService.generateAuthCode(telephone);
         if(result.getCode() == 200){
             log.info("generateAuthCode success");
         }
@@ -38,8 +38,8 @@ public class UmsUserController {
 
     @ApiOperation("判断验证码是否正确")
     @RequestMapping(value = "/verifyAuthCode", method = RequestMethod.POST)
-    public CommonResult verifyAuthCode(@RequestParam("telephone") String telephone, @RequestParam("authCode") String authCode) {
-        CommonResult result = umsMemberService.verifyAuthCode(telephone, authCode);
+    public CommonResult<String> verifyAuthCode(@RequestParam("telephone") String telephone, @RequestParam("authCode") String authCode) {
+        CommonResult<String> result = umsMemberService.verifyAuthCode(telephone, authCode);
         if(result.getCode() == 200){
             log.info("verifyAuthCode success");
         }

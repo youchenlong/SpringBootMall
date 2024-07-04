@@ -22,51 +22,59 @@ public class PmsBrandController {
     private static final Logger log = LoggerFactory.getLogger(PmsBrandController.class);
 
     @ApiOperation("添加品牌")
-    @RequestMapping(value = "/insert", method = RequestMethod.POST)
-    public CommonResult insertBrand(@RequestBody PmsBrand brand) {
-        int count = brandService.insertBrand(brand);
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    public CommonResult<PmsBrand> addBrand(@RequestBody PmsBrand brand) {
+        int count = brandService.addBrand(brand);
         if (count > 0) {
-            log.info("insert brand success: {}", brand);
+            log.info("insert brand successfully: {}", brand);
             return CommonResult.success(brand);
         }
         else{
-            log.info("insert brand fail: {}", brand);
+            log.info("insert brand failed");
             return CommonResult.failed("fail");
         }
     }
 
     @ApiOperation("更新品牌信息")
     @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
-    public CommonResult updateBrand(@PathVariable Long id, @RequestBody PmsBrand brand) {
+    public CommonResult<PmsBrand> updateBrand(@PathVariable Long id, @RequestBody PmsBrand brand) {
         int count = brandService.updateBrand(id, brand);
         if (count > 0) {
-            log.info("update brand success: {}", brand);
+            log.info("update brand successfully: {}", brand);
             return CommonResult.success(brand);
         }
         else{
-            log.info("update brand fail: {}", brand);
-            return CommonResult.failed("fail");
+            log.info("update brand failed");
+            return CommonResult.failed("failed");
         }
     }
 
     @ApiOperation("删除品牌")
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
-    public CommonResult deleteBrandById(@PathVariable("id") Long id) {
-        int count = brandService.deleteBrandById(id);
+    @RequestMapping(value = "/remove/{id}", method = RequestMethod.GET)
+    public CommonResult<PmsBrand> removeBrandById(@PathVariable("id") Long id) {
+        int count = brandService.removeBrandById(id);
         if (count > 0) {
-            log.info("delete brand success: {}", id);
+            log.info("delete brand successfully: {}", id);
             return CommonResult.success(null);
         }
         else{
-            log.info("delete brand fail: {}", id);
-            return CommonResult.failed("fail");
+            log.info("delete brand failed");
+            return CommonResult.failed("failed");
         }
     }
 
     @ApiOperation("查询品牌信息")
-    @RequestMapping(value = "/select/{id}", method = RequestMethod.GET)
-    public CommonResult selectBrandById(@PathVariable("id") Long id) {
-        return CommonResult.success(brandService.selectBrandById(id));
+    @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
+    public CommonResult<PmsBrand> getBrandById(@PathVariable("id") Long id) {
+        PmsBrand brand = brandService.getBrandById(id);
+        if (brand != null) {
+            log.info("select brand successfully: {}", brand);
+            return CommonResult.success(brand);
+        }
+        else {
+            log.info("select brand failed");
+            return CommonResult.failed("failed");
+        }
     }
 
 
