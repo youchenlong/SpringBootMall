@@ -40,6 +40,20 @@
         where id = #{id}
     </select>
 
+    <select id="selectByUsername" resultType="com.example.springbootmall.model.UmsUser">
+        select id,
+               username,
+               password,
+               nickname,
+               phone,
+               email,
+               gender,
+               create_time,
+               birthday
+        from ums_user
+        where username = #{username}
+    </select>
+
     <select id="selectAll" resultType="com.example.springbootmall.model.UmsUser">
         select id,
                username,

@@ -35,10 +35,10 @@ redis:
       product: "product:"
       cart: "cart:"
     expire:
-      auth: 120 # 验证码超时时间
-      brand: 120 # 品牌超时时间
-      product: 120 # 商品超时时间
-      cart: 120 # 购物车超时时间
+      auth: 60
+      brand: 60
+      product: 60
+      cart: 60
 
 
 

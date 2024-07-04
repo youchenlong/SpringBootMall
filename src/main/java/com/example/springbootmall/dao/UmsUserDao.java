@@ -15,5 +15,7 @@ public interface UmsUserDao {
 
     UmsUser selectByPrimaryKey(Long id);
 
+    UmsUser selectByUsername(String username);
+
     List<UmsUser> selectAll();
 }

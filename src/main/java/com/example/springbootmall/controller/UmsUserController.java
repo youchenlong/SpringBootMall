@@ -23,29 +23,4 @@ public class UmsUserController {
 
     private static final Logger log = LoggerFactory.getLogger(UmsUserController.class);
 
-    @ApiOperation("获取验证码")
-    @RequestMapping(value = "/generateAuthCode", method = RequestMethod.GET)
-    public CommonResult<String> generateAuthCode(@RequestParam("telephone") String telephone) {
-        CommonResult<String> result = umsMemberService.generateAuthCode(telephone);
-        if(result.getCode() == 200){
-            log.info("generateAuthCode success");
-        }
-        else {
-            log.info("generateAuthCode fail");
-        }
-        return result;
-    }
-
-    @ApiOperation("判断验证码是否正确")
-    @RequestMapping(value = "/verifyAuthCode", method = RequestMethod.POST)
-    public CommonResult<String> verifyAuthCode(@RequestParam("telephone") String telephone, @RequestParam("authCode") String authCode) {
-        CommonResult<String> result = umsMemberService.verifyAuthCode(telephone, authCode);
-        if(result.getCode() == 200){
-            log.info("verifyAuthCode success");
-        }
-        else {
-            log.info("verifyAuthCode fail");
-        }
-        return result;
-    }
 }

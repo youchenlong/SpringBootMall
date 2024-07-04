@@ -38,16 +38,8 @@ class UmsUserDaoTest {
 
     @Test
     void update() {
-        UmsUser umsUser = new UmsUser();
-        umsUser.setId(1L);
-        umsUser.setUsername("202224021001");
-        umsUser.setPassword("202224021001");
-        umsUser.setNickname("Alice");
-        umsUser.setPhone("13096190001");
-        umsUser.setEmail("2091838001@qq.com");
-        umsUser.setGender(0);
-        umsUser.setCreateTime(new Date());
-        umsUser.setBirthday(new Date());
+        UmsUser umsUser = umsUserDao.selectByPrimaryKey(1L);
+        // do nothing
         int result = umsUserDao.update(umsUser);
         log.info("update id={}, result={}", umsUser.getId(), result);
     }
@@ -61,6 +53,12 @@ class UmsUserDaoTest {
     @Test
     void selectByPrimaryKey() {
         UmsUser umsUser = umsUserDao.selectByPrimaryKey(1L);
+        log.info("select id={}, result={}", umsUser.getId(), umsUser);
+    }
+
+    @Test
+    void selectByUsername() {
+        UmsUser umsUser = umsUserDao.selectByUsername("202224021001");
         log.info("select id={}, result={}", umsUser.getId(), umsUser);
     }
 

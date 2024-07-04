@@ -35,34 +35,35 @@
   * 品牌增删改查
   * 商品增删改查
   * 品牌缓存
-    - [X]  Redis(String + List)
+    - [X]  Redis (String + List)
       - String存储<"brand:" + "brandId:" + brandId, brand>
       - List存储<"brand:" + "allBrandIds", brandIds>
   * 商品缓存
-    - [X]  Redis(String + List)
+    - [X]  Redis (String + List)
       - String存储<"product:" + "productId:" + productId, product>
       - List存储<"product:" + "allProductIds", productIds>
   * 热门商品
-    - [ ]  Redis(Sorted Set)
+    - [ ]  Redis (Sorted Set)
   * 商品检索
     - [ ]  ElasticSearch
 * 订单管理
   * 订单增删改查
   * 购物车
-    - [X]  Redis(Hash + List + String)
+    - [X]  Redis (Hash + List + String)
       - Hash存储<"cart:" + "cartId:" + cartId, cart>和<"cart:" + "cartItemId:" + cartItemId, cartItem>, 设置过期键
       - String存储<"cart:" + "userId:" + userId, cartId>
       - List存储<"cart:" + "allCartIds", cartIds>, <"cart:" + "allCartItemIdsOfCartId:" + cartId, cartItemIds>
   * 订单超时处理
-    - [ ]  Redis(过期键)
-    - [ ]  RabbitMQ(消息TTL+死信Exchange)
+    - [ ]  Redis (过期键)
+    - [ ]  RabbitMQ (消息TTL+死信Exchange)
   * 限时抢购
-    - [ ]  Redis(过期键) + RabbitMQ(消息TTL+死信Exchange)
+    - [ ]  Redis (过期键) + RabbitMQ (消息TTL+死信Exchange)
 * 用户管理
   * 用户增删改查
-  * 用户认证（获取验证码，判断验证码是否正确）
-    - [X]  Redis(String)
-      - String存储<telephone, authCode>
+  * 账号密码登录
+    - [X]  Spring Security (PasswordEncoder)
+  * 手机号登录
+    - [X]  Redis (过期键)
 
 ### 练习
 
