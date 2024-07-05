@@ -19,10 +19,12 @@ import java.util.Random;
 public class UmsUserServiceImpl implements UmsUserService {
 
     private static final Logger log = LoggerFactory.getLogger(UmsUserServiceImpl.class);
+
     @Autowired
     private UmsUserDao umsUserDao;
     @Autowired
     private PasswordEncoder passwordEncoder;
+
     @Autowired
     private RedisService redisService;
     @Value("${redis.key.prefix.auth}")
@@ -32,6 +34,9 @@ public class UmsUserServiceImpl implements UmsUserService {
 
     @Override
     public int register(UmsUser user) {
+        if (user == null) {
+            return 0;
+        }
         // if user already exists
         List<UmsUser> users =  getAllUser();
         for (UmsUser oldUser : users) {
@@ -55,6 +60,9 @@ public class UmsUserServiceImpl implements UmsUserService {
 
     @Override
     public int update(Long userId, UmsUser user) {
+        if (user == null) {
+            return 0;
+        }
         user.setId(userId);
         int result = umsUserDao.update(user);
         if (result == 0) {

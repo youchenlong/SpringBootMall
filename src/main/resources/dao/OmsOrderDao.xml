@@ -40,6 +40,20 @@
         where id = #{id}
     </select>
 
+    <select id="selectByUserId" resultType="com.example.springbootmall.model.OmsOrder">
+        select id,
+               user_id,
+               status,
+               create_time,
+               payment_time,
+               delivery_time,
+               receive_time,
+               comment_time,
+               update_time
+        from oms_order
+        where user_id = #{userId}
+    </select>
+
     <select id="selectAll" resultType="com.example.springbootmall.model.OmsOrder">
         select id,
                user_id,

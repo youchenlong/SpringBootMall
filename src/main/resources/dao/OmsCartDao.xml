@@ -39,7 +39,7 @@
                create_time,
                update_time
         from oms_cart
-        where user_id = #{user_id}
+        where user_id = #{userId}
     </select>
 
     <select id="selectAll" resultType="com.example.springbootmall.model.OmsCart">

@@ -12,9 +12,9 @@ public interface OmsCartService {
     OmsCart getCartById(Long cartId);
     OmsCart getCartByUserId(Long userId);
     List<OmsCart> getAllCarts();
-    int addItemToCart(OmsCartItem cartItem);
-    int updateItemFromCart(Long cartItemId, OmsCartItem cartItem);
-    int removeItemFromCartById(Long cartItemId);
+    int addCartItemToCart(OmsCartItem cartItem);
+    int updateCartItemFromCart(Long cartItemId, OmsCartItem cartItem);
+    int removeCartItemFromCartById(Long cartItemId);
     OmsCartItem getCartItemById(Long cartItemId);
     List<OmsCartItem> getCartItemByCartId(Long cartId);
     List<OmsCartItem> getCartItemByUserId(Long userId);

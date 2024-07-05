@@ -11,16 +11,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 class OmsCartServiceTest {
 
     private static final Logger log = LoggerFactory.getLogger(OmsCartServiceTest.class);
     @Autowired
     private OmsCartService omsCartService;
-    @Autowired
-    private RedisService redisService;
 
     @Test
     void addCart() {
@@ -73,7 +69,7 @@ class OmsCartServiceTest {
         omsCartItem.setCartId(1L);
         omsCartItem.setProductId(1L);
         omsCartItem.setProductQuantity(1);
-        int result = omsCartService.addItemToCart(omsCartItem);
+        int result = omsCartService.addCartItemToCart(omsCartItem);
         log.info("add id={}, result={}", omsCartItem.getId(), result);
     }
 
@@ -81,13 +77,13 @@ class OmsCartServiceTest {
     void updateItemFromCart() {
         OmsCartItem omsCartItem = omsCartService.getCartItemById(1L);
         // do nothing
-        omsCartService.updateItemFromCart(1L, omsCartItem);
+        omsCartService.updateCartItemFromCart(1L, omsCartItem);
         log.info("update id={}, result={}", 1L, omsCartItem);
     }
 
     @Test
     void removeItemFromCartById() {
-        int result = omsCartService.removeItemFromCartById(1L);
+        int result = omsCartService.removeCartItemFromCartById(1L);
         log.info("remove id={}, result={}", 1L, result);
     }
 

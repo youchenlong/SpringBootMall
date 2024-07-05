@@ -1,7 +1,8 @@
 package com.example.springbootmall.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.convert.Convert;
 import com.example.springbootmall.dao.PmsProductDao;
-import com.example.springbootmall.model.PmsBrand;
 import com.example.springbootmall.model.PmsProduct;
 import com.example.springbootmall.service.PmsProductService;
 import com.example.springbootmall.service.RedisService;
@@ -13,20 +14,22 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class PmsProductServiceImpl implements PmsProductService {
 
     private static final Logger log = LoggerFactory.getLogger(PmsProductServiceImpl.class);
+
+    @Autowired
+    private PmsProductDao pmsProductDao;
+
     @Autowired
     private RedisService redisService;
     @Value("${redis.key.prefix.product}")
     private String REDIS_KEY_PREFIX_PRODUCT;
     @Value("${redis.key.expire.product}")
     private Long REDIS_KEY_EXPIRE_PRODUCT;
-
-    @Autowired
-    private PmsProductDao pmsProductDao;
 
     private void freeRedis() {
         List<Object> productIds = redisService.lrange(REDIS_KEY_PREFIX_PRODUCT + "allProductIds", 0, -1);
@@ -38,6 +41,9 @@ public class PmsProductServiceImpl implements PmsProductService {
 
     @Override
     public int addProduct(PmsProduct product) {
+        if (product == null) {
+            return 0;
+        }
         // if product already exists
         List<PmsProduct> products = getAllProduct();
         for (PmsProduct oldProduct : products) {
@@ -60,6 +66,9 @@ public class PmsProductServiceImpl implements PmsProductService {
 
     @Override
     public int updateProduct(Long productId, PmsProduct product) {
+        if (product == null) {
+            return 0;
+        }
         // Cache Aside Pattern
         product.setId(productId);
         int result = pmsProductDao.update(product);
@@ -88,8 +97,9 @@ public class PmsProductServiceImpl implements PmsProductService {
     @Override
     public PmsProduct getProductById(Long productId) {
         // search in redis first
-        PmsProduct product = (PmsProduct) redisService.get(REDIS_KEY_PREFIX_PRODUCT + "productId:" + productId);
-        if (product != null) {
+        Map<Object, Object> map = redisService.hGetAll(REDIS_KEY_PREFIX_PRODUCT + "productId:" + productId);
+        PmsProduct product = BeanUtil.fillBeanWithMap(map, new PmsProduct(), false);
+        if (!map.isEmpty()) {
             return product;
         }
 
@@ -98,11 +108,11 @@ public class PmsProductServiceImpl implements PmsProductService {
 
         // store in redis
         if (product != null) {
-            redisService.set(REDIS_KEY_PREFIX_PRODUCT + "productId:" + productId, product);
+            redisService.hSetAll(REDIS_KEY_PREFIX_PRODUCT + "productId:" + productId, BeanUtil.beanToMap(product));
             redisService.expire(REDIS_KEY_PREFIX_PRODUCT + "productId:" + productId, REDIS_KEY_EXPIRE_PRODUCT);
             return product;
         }
-        return product;
+        return null;
     }
 
     @Override
@@ -112,7 +122,7 @@ public class PmsProductServiceImpl implements PmsProductService {
         List<PmsProduct> products = new ArrayList<>();
         if (productIds != null && !productIds.isEmpty()) {
             for (Object productId : productIds) {
-                PmsProduct product = getProductById((Long) productId);
+                PmsProduct product = getProductById(Convert.convert(Long.class, productId));
                 products.add(product);
             }
             return products;
@@ -126,7 +136,8 @@ public class PmsProductServiceImpl implements PmsProductService {
             for (PmsProduct product : products) {
                 redisService.lpush(REDIS_KEY_PREFIX_PRODUCT + "allProductIds", product.getId());
             }
+            return products;
         }
-        return products;
+        return null;
     }
 }

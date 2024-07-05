@@ -34,11 +34,13 @@ redis:
       brand: "brand:"
       product: "product:"
       cart: "cart:"
+      order: "order:"
     expire:
       auth: 60
       brand: 60
       product: 60
       cart: 60
+      order: 3600
 
 
 

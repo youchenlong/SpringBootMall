@@ -15,5 +15,7 @@ public interface OmsOrderDao {
 
     OmsOrder selectByPrimaryKey(Long id);
 
+    List<OmsOrder> selectByUserId(Long userId);
+
     List<OmsOrder> selectAll();
 }

@@ -36,25 +36,32 @@
   * 商品增删改查
   * 品牌缓存
     - [X]  Redis (String + List)
-      - String存储<"brand:" + "brandId:" + brandId, brand>
+      - Hash存储<"brand:" + "brandId:" + brandId, brand>，设置过期键
       - List存储<"brand:" + "allBrandIds", brandIds>
   * 商品缓存
     - [X]  Redis (String + List)
-      - String存储<"product:" + "productId:" + productId, product>
+      - Hash存储<"product:" + "productId:" + productId, product>，设置过期键
       - List存储<"product:" + "allProductIds", productIds>
   * 热门商品
     - [ ]  Redis (Sorted Set)
   * 商品检索
     - [ ]  ElasticSearch
 * 订单管理
+  * 购物车增删改查
   * 订单增删改查
-  * 购物车
+  * 购物车缓存
     - [X]  Redis (Hash + List + String)
-      - Hash存储<"cart:" + "cartId:" + cartId, cart>和<"cart:" + "cartItemId:" + cartItemId, cartItem>, 设置过期键
+      - Hash存储<"cart:" + "cartId:" + cartId, cart>, <"cart:" + "cartItemId:" + cartItemId, cartItem>，设置过期键
       - String存储<"cart:" + "userId:" + userId, cartId>
       - List存储<"cart:" + "allCartIds", cartIds>, <"cart:" + "allCartItemIdsOfCartId:" + cartId, cartItemIds>
+  * 订单缓存
+    - [X]  Redis (Hash + List)
+      - Hash存储<"order:" + "orderId:" + orderId, order>, <"order:" + "orderItemId:" + orderItemId, orderItem>，设置过期键
+      - List存储<"order:" + "userId:" + userId, orderIds>
+      - List存储<"order:" + "allOrderIds", orderIds>, <"order:" + "allOrderItemIdsOfOrderId:" + orderId, orderItemIds>
   * 订单超时处理
-    - [ ]  Redis (过期键)
+    - [X]  ~~Redis (过期事件)~~
+      - notify-keyspace-events Ex
     - [ ]  RabbitMQ (消息TTL+死信Exchange)
   * 限时抢购
     - [ ]  Redis (过期键) + RabbitMQ (消息TTL+死信Exchange)
@@ -79,7 +86,7 @@
     - 内存淘汰机制 -> allkeys-lru
   - [ ]  持久化？
     - AOF
-  - [ ]  一致性？
+  - [X]  一致性？
     - Cache Aside Pattern -> 异步重试(消息队列)
   - [ ]  缓存穿透、缓存雪崩？
   - [ ]  高可用？
