@@ -30,34 +30,44 @@ class PmsProductServiceTest {
         pmsProduct.setSale(0);
         pmsProduct.setStock(1000);
         int result = pmsProductService.addProduct(pmsProduct);
-        log.info("add id={}, result={}", pmsProduct.getId(), result);
+        log.info("addProduct id={}, result={}", pmsProduct.getId(), result);
     }
 
     @Test
     void updateProduct() {
-        PmsProduct pmsProduct = pmsProductService.getProductById(1L);
+        PmsProduct pmsProduct = pmsProductService.getProductById(3L);
         // do nothing
-        int result = pmsProductService.updateProduct(1L, pmsProduct);
-        log.info("update id={}, result={}", pmsProduct.getId(), result);
+        pmsProduct.setSale(0);
+        pmsProduct.setStock(1000);
+        int result = pmsProductService.updateProduct(3L, pmsProduct);
+        log.info("updateProduct id={}, result={}", pmsProduct.getId(), result);
     }
 
     @Test
     void removeProductById() {
         int result = pmsProductService.removeProductById(1L);
-        log.info("remove id={}, result={}", 1L, result);
+        log.info("removeProductById id={}, result={}", 1L, result);
     }
 
     @Test
     void getProductById() {
         PmsProduct pmsProduct = pmsProductService.getProductById(1L);
-        log.info("get id={}, result={}", pmsProduct.getId(), pmsProduct);
+        log.info("getProductById id={}, result={}", pmsProduct.getId(), pmsProduct);
     }
 
     @Test
     void getAllProduct() {
         List<PmsProduct> pmsProducts = pmsProductService.getAllProduct();
         for (PmsProduct pmsProduct : pmsProducts) {
-            log.info("get id={}, result={}", pmsProduct.getId(), pmsProduct);
+            log.info("getAllProduct id={}, result={}", pmsProduct.getId(), pmsProduct);
+        }
+    }
+
+    @Test
+    void getAllProductBySale() {
+        List<PmsProduct> pmsProducts = pmsProductService.getAllProductBySale();
+        for (PmsProduct pmsProduct : pmsProducts) {
+            log.info("getAllProductBySale id={}, result={}", pmsProduct.getId(), pmsProduct);
         }
     }
 }

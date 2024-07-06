@@ -25,11 +25,6 @@ class OmsOrderServiceTest {
         order.setUserId(1L);
         order.setStatus(0);
         order.setCreateTime(new Date());
-        order.setPaymentTime(new Date());
-        order.setDeliveryTime(new Date());
-        order.setReceiveTime(new Date());
-        order.setCommentTime(new Date());
-        order.setUpdateTime(new Date());
         int result = omsOrderService.addOrder(order);
         log.info("addOrder, id={}, result={}", order.getId(), result);
     }
@@ -69,10 +64,9 @@ class OmsOrderServiceTest {
     @Test
     void addOrderItemToOrder() {
         OmsOrderItem omsOrderItem = new OmsOrderItem();
-        omsOrderItem.setId(1L);
-        omsOrderItem.setOrderId(1L);
-        omsOrderItem.setProductId(1L);
-        omsOrderItem.setProductQuantity(1);
+        omsOrderItem.setOrderId(2L);
+        omsOrderItem.setProductId(6L);
+        omsOrderItem.setProductQuantity(6);
         int result = omsOrderService.addOrderItemToOrder(omsOrderItem);
         log.info("addOrderItemToOrder, id={}, result={}", omsOrderItem.getId(), result);
     }
@@ -87,14 +81,14 @@ class OmsOrderServiceTest {
 
     @Test
     void removeOrderItemFromOrderById() {
-        int result = omsOrderService.removeOrderItemFromOrderById(1L);
-        log.info("removeOrderItemFromOrderById, id={}, result={}", 1L, result);
+        int result = omsOrderService.removeOrderItemFromOrderById(25L);
+        log.info("removeOrderItemFromOrderById, id={}, result={}", 25L, result);
     }
 
     @Test
     void getOrderItemById() {
-        OmsOrderItem omsOrderItem = omsOrderService.getOrderItemById(1L);
-        log.info("getOrderItemById, id={}, result={}", 1L, omsOrderItem);
+        OmsOrderItem omsOrderItem = omsOrderService.getOrderItemById(17L);
+        log.info("getOrderItemById, id={}, result={}", omsOrderItem.getId(), omsOrderItem);
     }
 
     @Test
@@ -107,5 +101,12 @@ class OmsOrderServiceTest {
     void getOrderItemByUserId() {
         List<OmsOrderItem> orderItems = omsOrderService.getOrderItemByUserId(1L);
         log.info("getOrderItemByUserId, orderItems={}", orderItems);
+    }
+
+    @Test
+    void cancelOrder() {
+        OmsOrder order = omsOrderService.getOrderById(20L);
+        int result = omsOrderService.cancelOrder(order);
+        log.info("cancelOrder, id={}, result={}", 20L, result);
     }
 }

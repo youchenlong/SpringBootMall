@@ -4,9 +4,12 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.convert.Convert;
 import com.example.springbootmall.dao.OmsOrderDao;
 import com.example.springbootmall.dao.OmsOrderItemDao;
+import com.example.springbootmall.dao.PmsProductDao;
 import com.example.springbootmall.model.OmsOrder;
 import com.example.springbootmall.model.OmsOrderItem;
+import com.example.springbootmall.model.PmsProduct;
 import com.example.springbootmall.service.OmsOrderService;
+import com.example.springbootmall.service.PmsProductService;
 import com.example.springbootmall.service.RedisService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +28,10 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     private OmsOrderDao omsOrderDao;
     @Autowired
     private OmsOrderItemDao omsOrderItemDao;
+//    @Autowired
+//    private PmsProductDao pmsProductDao;
+    @Autowired
+    private PmsProductService pmsProductService;
 
     @Autowired
     private RedisService redisService;
@@ -84,6 +91,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
 
     @Override
     public int removeOrder(Long orderId) {
+        // pay attention to the difference between `removeOrder` and `cancelOrder`
         // Cache Aside Pattern
         int result = omsOrderDao.deleteByPrimaryKey(orderId);
         if (result == 0) {
@@ -173,23 +181,34 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         if (orderItem == null) {
             return 0;
         }
-        // if product already exists
+        // if orderItem already exists
         Long productId = orderItem.getProductId();
         List<OmsOrderItem> orderItems = getOrderItemByOrderId(orderItem.getOrderId());
-        for (OmsOrderItem oldOrderItem : orderItems) {
-            if (oldOrderItem.getProductId().equals(productId)) {
-                orderItem.setProductId(orderItem.getProductId() + oldOrderItem.getProductId());
-                return updateOrderItemFromOrder(orderItem.getId(), orderItem);
+        if (orderItems != null && !orderItems.isEmpty()) {
+            for (OmsOrderItem oldOrderItem : orderItems) {
+                if (oldOrderItem.getProductId().equals(productId)) {
+                    PmsProduct product = pmsProductService.getProductById(orderItem.getProductId());
+                    product.setSale(product.getSale() + orderItem.getProductQuantity());
+                    product.setStock(product.getStock() - orderItem.getProductQuantity());
+                    pmsProductService.updateProduct(product.getId(), product);
+                    orderItem.setProductQuantity(orderItem.getProductQuantity() + oldOrderItem.getProductQuantity());
+                    orderItem.setId(oldOrderItem.getId());
+                    return updateOrderItemFromOrder(orderItem.getId(), orderItem);
+                }
             }
         }
 
         // Cache Aside Pattern
+        PmsProduct product = pmsProductService.getProductById(productId);
+        product.setSale(product.getSale() + orderItem.getProductQuantity());
+        product.setStock(product.getStock() - orderItem.getProductQuantity());
+        pmsProductService.updateProduct(product.getId(), product);
         int result = omsOrderItemDao.insert(orderItem);
         if (result == 0) {
             log.info("add orderItem failed");
             return 0;
         }
-        OmsOrder order = getOrderById(orderItem.getId());
+        OmsOrder order = getOrderById(orderItem.getOrderId());
         updateOrder(order.getId(), order);
         freeRedis(order);
         return result;
@@ -200,7 +219,6 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         if (orderItem == null) {
             return 0;
         }
-
         // Cache Aside Pattern
         orderItem.setId(orderItemId);
         int result = omsOrderItemDao.update(orderItem);
@@ -216,8 +234,15 @@ public class OmsOrderServiceImpl implements OmsOrderService {
 
     @Override
     public int removeOrderItemFromOrderById(Long orderItemId) {
-        // Cache Aside Pattern
         OmsOrderItem orderItem = getOrderItemById(orderItemId);
+        if (orderItem == null) {
+            return 0;
+        }
+        // Cache Aside Pattern
+        PmsProduct product = pmsProductService.getProductById(orderItem.getProductId());
+        product.setSale(product.getSale() - orderItem.getProductQuantity());
+        product.setStock(product.getStock() + orderItem.getProductQuantity());
+        pmsProductService.updateProduct(product.getId(), product);
         int result = omsOrderItemDao.deleteByPrimaryKey(orderItemId);
         if (result == 0) {
             log.info("remove orderItem failed");
@@ -296,6 +321,15 @@ public class OmsOrderServiceImpl implements OmsOrderService {
 
     @Override
     public int cancelOrder(OmsOrder order) {
+        List<OmsOrderItem> orderItems = getOrderItemByOrderId(order.getId());
+        if (orderItems != null && !orderItems.isEmpty()) {
+            for (OmsOrderItem orderItem : orderItems) {
+                if (removeOrderItemFromOrderById(orderItem.getId()) == 0) {
+                    log.info("cancel order failed");
+                    return 0;
+                }
+            }
+        }
         int result = removeOrder(order.getId());
         if (result == 0) {
             log.info("cancel order failed");

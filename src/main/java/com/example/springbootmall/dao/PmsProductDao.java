@@ -12,4 +12,5 @@ public interface PmsProductDao {
     int deleteByPrimaryKey(Long id);
     PmsProduct selectByPrimaryKey(Long id);
     List<PmsProduct> selectAll();
+    List<PmsProduct> selectAllBySale();
 }

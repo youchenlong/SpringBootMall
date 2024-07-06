@@ -11,11 +11,11 @@
 
     <update id="update">
         update oms_cart
-        set id = #{id},
-            user_id = #{userId},
+        set user_id = #{userId},
             status = #{status},
             create_time = #{createTime},
             update_time = #{updateTime}
+        where id = #{id}
     </update>
 
     <delete id="deleteByPrimaryKey">

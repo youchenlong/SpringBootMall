@@ -10,4 +10,5 @@ public interface PmsProductService {
     int removeProductById(Long productId);
     PmsProduct getProductById(Long productId);
     List<PmsProduct> getAllProduct();
+    List<PmsProduct> getAllProductBySale();
 }

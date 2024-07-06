@@ -11,14 +11,14 @@
 
     <update id="update">
         update pms_product
-        set id = #{id},
-            brand_id = #{brandId},
+        set brand_id = #{brandId},
             name = #{name},
             description = #{description},
             keywords = #{keywords},
             price = #{price},
             sale = #{sale},
             stock = #{stock}
+        where id = #{id}
     </update>
 
     <delete id="deleteByPrimaryKey">
@@ -48,5 +48,18 @@
                sale,
                stock
         from pms_product
+    </select>
+
+    <select id="selectAllBySale" resultType="com.example.springbootmall.model.PmsProduct">
+        select id,
+               brand_id,
+               name,
+               description,
+               keywords,
+               price,
+               sale,
+               stock
+        from pms_product
+        order by sale desc
     </select>
 </mapper>

@@ -11,8 +11,7 @@
 
     <update id="update">
         update oms_order
-        set id = #{id},
-            user_id = #{userId},
+        set user_id = #{userId},
             status = #{status},
             create_time = #{createTime},
             payment_time = #{paymentTime},
@@ -20,6 +19,7 @@
             receive_time = #{receiveTime},
             comment_time = #{commentTime},
             update_time = #{updateTime}
+        where id = #{id}
     </update>
 
     <delete id="deleteByPrimaryKey">

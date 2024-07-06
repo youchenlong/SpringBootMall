@@ -20,21 +20,12 @@ public class EsProduct implements Serializable {
     @Id
     private Long id;
     private Long brandId;
-    private Long categoryId;
-    @Field(type = FieldType.Keyword)
-    private String brandName;
-    @Field(type = FieldType.Keyword)
-    private String categoryName;
-    @Field(type = FieldType.Keyword)
-    private String productSn; // 货号
     @Field(type = FieldType.Text, analyzer = "ik_max_word")
     private String name;
     @Field(type = FieldType.Text, analyzer = "ik_max_word")
-    private String subTitle;
+    private String description;
     @Field(type = FieldType.Text, analyzer = "ik_max_word")
     private String keywords;
-    private String pic; // 图片
-    private Integer sort; // 排序
     private BigDecimal price; // 价格
     private Integer sale; // 销量
     private Integer stock; // 库存

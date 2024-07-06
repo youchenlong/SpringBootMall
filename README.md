@@ -23,8 +23,6 @@
   use mall_tiny;
   source mall_tiny_filled.sql;
   ```
-* 测试
-  * PmsBrandDaoTest -> PmsProductDaoTest -> UmsUserDaoTest -> OmsCartDaoTest -> OmsCartItemDaoTest -> OmsOrderDaoTest -> OmsOrderItemDaoTest
 * 一些不合理的约束
   * 一个用户只能有一个购物车 (在添加购物车时判断购物车是否存在)
   * 品牌名不能相同（在添加品牌时判断品牌是否存在）
@@ -42,8 +40,9 @@
     - [X]  Redis (String + List)
       - Hash存储<"product:" + "productId:" + productId, product>，设置过期键
       - List存储<"product:" + "allProductIds", productIds>
-  * 热门商品
-    - [ ]  Redis (Sorted Set)
+  * 销量排行榜
+    - [X]  Redis (Sorted Set)
+      - Sorted Set存储<"product:" + "sales", product, sale>
   * 商品检索
     - [ ]  ElasticSearch
 * 订单管理
@@ -71,27 +70,37 @@
     - [X]  Spring Security (PasswordEncoder)
   * 手机号登录
     - [X]  Redis (过期键)
+  * 会话管理
+    - [ ]  Spring Session + Redis
 
 ### 练习
 
 * MySQL
-  - [X]  MySQL增删改查？
-  - [ ]  索引？
-  - [ ]  读写分离？
-  - [ ]  分库分表？
+  - MySQL增删改查？
+    - [X] 品牌，商品，用户，购物车，订单
+  - 索引？
+  - 读写分离？
+  - 分库分表？
 * Redis
-  - [ ]  Redis的应用场景？
-  - [ ]  内存管理？
-    - 删除过期键 -> 定期删除
-    - 内存淘汰机制 -> allkeys-lru
-  - [ ]  持久化？
-    - AOF
-  - [X]  一致性？
-    - Cache Aside Pattern -> 异步重试(消息队列)
-  - [ ]  缓存穿透、缓存雪崩？
-  - [ ]  高可用？
-    - 哨兵模式
+  - Redis的应用场景？
+    - [X] 缓存
+    - [ ] 排行榜
+    - [ ] 会话存储
+  - 内存管理？
+    - [ ] 删除过期键 -> 定期删除
+    - [ ] 内存淘汰机制 -> allkeys-lru
+  - 持久化？
+    - [ ] AOF
+  - 一致性？
+    - [X] Cache Aside Pattern -> 异步重试(消息队列)
+  - 缓存穿透
+    - [ ] 布隆过滤器
+  - 缓存雪崩？
+    - [ ] 设置不同的过期时间
+    - [ ] 集群（伪集群）
+  - 高可用？
+    - [ ] 哨兵模式（一主二从）
 * RabbitMQ
-  - [ ]  RabbitMQ的应用场景？
+  - RabbitMQ的应用场景？
 * ElasticSearch
-  - [ ]  ElasticSearch的应用场景？
+  - ElasticSearch的应用场景？

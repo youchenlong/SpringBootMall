@@ -11,10 +11,10 @@
 
     <update id="update">
         update oms_order_item
-        set id = #{id},
-            order_id = #{orderId},
+        set order_id = #{orderId},
             product_id = #{productId},
             product_quantity = #{productQuantity}
+        where id = #{id}
     </update>
 
     <delete id="deleteByPrimaryKey">

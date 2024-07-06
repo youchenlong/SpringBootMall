@@ -182,10 +182,13 @@ public class OmsCartServiceImpl implements OmsCartService {
         // if product already exists
         Long productId = cartItem.getProductId();
         List<OmsCartItem> cartItems = getCartItemByCartId(cartItem.getCartId());
-        for (OmsCartItem oldCartItem : cartItems) {
-            if (oldCartItem.getProductId().equals(productId)) {
-                cartItem.setProductQuantity(cartItem.getProductQuantity() + oldCartItem.getProductQuantity());
-                return updateCartItemFromCart(cartItem.getId(), cartItem);
+        if (cartItems != null && !cartItems.isEmpty()) {
+            for (OmsCartItem oldCartItem : cartItems) {
+                if (oldCartItem.getProductId().equals(productId)) {
+                    cartItem.setProductQuantity(cartItem.getProductQuantity() + oldCartItem.getProductQuantity());
+                    cartItem.setId(oldCartItem.getId());
+                    return updateCartItemFromCart(cartItem.getId(), cartItem);
+                }
             }
         }
 

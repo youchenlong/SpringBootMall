@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class PmsProductServiceImpl implements PmsProductService {
@@ -37,6 +35,7 @@ public class PmsProductServiceImpl implements PmsProductService {
             redisService.del(REDIS_KEY_PREFIX_PRODUCT + "productId:" + productId);
         }
         redisService.del(REDIS_KEY_PREFIX_PRODUCT + "allProductIds");
+        redisService.del(REDIS_KEY_PREFIX_PRODUCT + "sales");
     }
 
     @Override
@@ -135,6 +134,31 @@ public class PmsProductServiceImpl implements PmsProductService {
         if (products != null && !products.isEmpty()) {
             for (PmsProduct product : products) {
                 redisService.lpush(REDIS_KEY_PREFIX_PRODUCT + "allProductIds", product.getId());
+            }
+            return products;
+        }
+        return null;
+    }
+
+    @Override
+    public List<PmsProduct> getAllProductBySale() {
+        // search in redis first
+        Set<Object> rankProducts = redisService.zRevRange(REDIS_KEY_PREFIX_PRODUCT + "sales", 0, -1);
+        List<PmsProduct> products = new ArrayList<>();
+        if (rankProducts != null && !rankProducts.isEmpty()) {
+            for (Object product : rankProducts) {
+                products.add((PmsProduct) product);
+            }
+            return products;
+        }
+
+        // search in mysql
+        products = pmsProductDao.selectAllBySale();
+
+        // store in redis
+        if (products != null && !products.isEmpty()) {
+            for (PmsProduct product : products) {
+                redisService.zAdd(REDIS_KEY_PREFIX_PRODUCT + "sales", product.getId(), product.getSale());
             }
             return products;
         }

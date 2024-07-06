@@ -11,8 +11,7 @@
 
     <update id="update">
         update ums_user
-        set id = #{id},
-            username = #{username},
+        set username = #{username},
             password = #{password},
             nickname = #{nickname},
             phone = #{phone},
@@ -20,6 +19,7 @@
             gender = #{gender},
             create_time = #{createTime},
             birthday = #{birthday}
+        where id = #{id}
     </update>
 
     <delete id="deleteByPrimaryKey">

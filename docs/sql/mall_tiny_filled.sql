@@ -135,16 +135,16 @@ CREATE TABLE `oms_order_item`  (
 -- ----------------------------
 -- Records of oms_order_item
 -- ----------------------------
-INSERT INTO `oms_order_item` VALUES (1, 1, 1, 1);
-INSERT INTO `oms_order_item` VALUES (2, 2, 2, 1);
-INSERT INTO `oms_order_item` VALUES (3, 3, 3, 1);
-INSERT INTO `oms_order_item` VALUES (4, 4, 4, 1);
-INSERT INTO `oms_order_item` VALUES (5, 5, 5, 1);
-INSERT INTO `oms_order_item` VALUES (6, 6, 6, 1);
-INSERT INTO `oms_order_item` VALUES (7, 7, 7, 1);
-INSERT INTO `oms_order_item` VALUES (8, 8, 8, 1);
-INSERT INTO `oms_order_item` VALUES (9, 9, 9, 1);
-INSERT INTO `oms_order_item` VALUES (10, 10, 10, 1);
+-- INSERT INTO `oms_order_item` VALUES (1, 1, 1, 1);
+-- INSERT INTO `oms_order_item` VALUES (2, 2, 2, 1);
+-- INSERT INTO `oms_order_item` VALUES (3, 3, 3, 1);
+-- INSERT INTO `oms_order_item` VALUES (4, 4, 4, 1);
+-- INSERT INTO `oms_order_item` VALUES (5, 5, 5, 1);
+-- INSERT INTO `oms_order_item` VALUES (6, 6, 6, 1);
+-- INSERT INTO `oms_order_item` VALUES (7, 7, 7, 1);
+-- INSERT INTO `oms_order_item` VALUES (8, 8, 8, 1);
+-- INSERT INTO `oms_order_item` VALUES (9, 9, 9, 1);
+-- INSERT INTO `oms_order_item` VALUES (10, 10, 10, 1);
 
 -- ----------------------------
 -- Table structure for oms_cart

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -51,8 +52,28 @@ public class RedisServiceImpl implements RedisService {
     }
 
     @Override
-    public List<Object> lrange(String key, int start, int end) {
+    public List<Object> lrange(String key, long start, long end) {
         return redisTemplate.opsForList().range(key, start, end);
+    }
+
+    @Override
+    public void zAdd(String key, Object value, double score) {
+        redisTemplate.opsForZSet().add(key, value, score);
+    }
+
+//    @Override
+//    public void zIncrScore(String key, Object value, double score) {
+//        redisTemplate.opsForZSet().incrementScore(key, value, score);
+//    }
+//
+//    @Override
+//    public Set<Object> zRange(String key, long start, long end) {
+//        return redisTemplate.opsForZSet().range(key, start, end);
+//    }
+
+    @Override
+    public Set<Object> zRevRange(String key, long start, long end) {
+        return redisTemplate.opsForZSet().reverseRange(key, start, end);
     }
 
     @Override
