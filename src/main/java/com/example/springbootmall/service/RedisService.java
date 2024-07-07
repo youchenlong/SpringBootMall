@@ -14,10 +14,9 @@ public interface RedisService {
     void lpush(String key, Object value);
     List<Object> lrange(String key, long start, long end);
     void zAdd(String key, Object value, double score);
-//    void zIncrScore(String key, Object value, double score);
-//    Set<Object> zRange(String key, long start, long end);
     Set<Object> zRevRange(String key, long start, long end);
     Boolean del(String key);
+    Long delAllByPrefix(String prefix);
     Boolean expire(String key, long time);
     Long getExpire(String key);
 }

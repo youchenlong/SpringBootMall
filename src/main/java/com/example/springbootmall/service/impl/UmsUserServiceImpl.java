@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Random;
@@ -33,6 +34,7 @@ public class UmsUserServiceImpl implements UmsUserService {
     private Long REDIS_KEY_EXPIRE_AUTH;
 
     @Override
+    @Transactional
     public int register(UmsUser user) {
         if (user == null) {
             return 0;
@@ -59,6 +61,7 @@ public class UmsUserServiceImpl implements UmsUserService {
     }
 
     @Override
+    @Transactional
     public int update(Long userId, UmsUser user) {
         if (user == null) {
             return 0;
@@ -74,6 +77,7 @@ public class UmsUserServiceImpl implements UmsUserService {
     }
 
     @Override
+    @Transactional
     public int delete(Long userId) {
         int result = umsUserDao.deleteByPrimaryKey(userId);
         if (result == 0) {

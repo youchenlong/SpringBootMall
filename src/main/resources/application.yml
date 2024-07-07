@@ -36,10 +36,10 @@ redis:
       cart: "cart:"
       order: "order:"
     expire:
-      auth: 60
-      brand: 60
-      product: 60
-      cart: 60
+      auth: 3600
+      brand: 3600
+      product: 3600
+      cart: 3600
       order: 3600
 
 

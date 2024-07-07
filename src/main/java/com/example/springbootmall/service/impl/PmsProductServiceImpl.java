@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -30,15 +31,11 @@ public class PmsProductServiceImpl implements PmsProductService {
     private Long REDIS_KEY_EXPIRE_PRODUCT;
 
     private void freeRedis() {
-        List<Object> productIds = redisService.lrange(REDIS_KEY_PREFIX_PRODUCT + "allProductIds", 0, -1);
-        for (Object productId : productIds) {
-            redisService.del(REDIS_KEY_PREFIX_PRODUCT + "productId:" + productId);
-        }
-        redisService.del(REDIS_KEY_PREFIX_PRODUCT + "allProductIds");
-        redisService.del(REDIS_KEY_PREFIX_PRODUCT + "sales");
+        redisService.delAllByPrefix(REDIS_KEY_PREFIX_PRODUCT);
     }
 
     @Override
+//    @Transactional
     public int addProduct(PmsProduct product) {
         if (product == null) {
             return 0;
@@ -64,6 +61,7 @@ public class PmsProductServiceImpl implements PmsProductService {
     }
 
     @Override
+//    @Transactional
     public int updateProduct(Long productId, PmsProduct product) {
         if (product == null) {
             return 0;
@@ -81,6 +79,7 @@ public class PmsProductServiceImpl implements PmsProductService {
     }
 
     @Override
+//    @Transactional
     public int removeProductById(Long productId) {
         // Cache Aside Pattern
         int result = pmsProductDao.deleteByPrimaryKey(productId);

@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -45,17 +46,11 @@ public class OmsOrderServiceImpl implements OmsOrderService {
             return;
         }
         // delete instead of update
-        List<Object> orderItemIds = redisService.lrange(REDIS_KEY_PREFIX_ORDER + "allOrderItemIdsOfOrderId:" + order.getId(), 0, -1);
-        for (Object orderItemId : orderItemIds) {
-            redisService.del(REDIS_KEY_PREFIX_ORDER + "orderItemId:" + orderItemId);
-        }
-        redisService.del(REDIS_KEY_PREFIX_ORDER + "orderId:" + order.getId());
-        redisService.del(REDIS_KEY_PREFIX_ORDER + "userId:" + order.getUserId());
-        redisService.del(REDIS_KEY_PREFIX_ORDER + "allOrderItemIdsOfOrderId:" + order.getId());
-        redisService.del(REDIS_KEY_PREFIX_ORDER + "allOrderIds");
+        redisService.delAllByPrefix(REDIS_KEY_PREFIX_ORDER);
     }
 
     @Override
+//    @Transactional
     public int addOrder(OmsOrder order) {
         if (order == null) {
             return 0;
@@ -72,6 +67,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     }
 
     @Override
+//    @Transactional
     public int updateOrder(Long orderId, OmsOrder order) {
         if (order == null) {
             return 0;
@@ -90,6 +86,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     }
 
     @Override
+//    @Transactional
     public int removeOrder(Long orderId) {
         // pay attention to the difference between `removeOrder` and `cancelOrder`
         // Cache Aside Pattern
@@ -177,6 +174,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     }
 
     @Override
+//    @Transactional
     public int addOrderItemToOrder(OmsOrderItem orderItem) {
         if (orderItem == null) {
             return 0;
@@ -215,6 +213,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     }
 
     @Override
+//    @Transactional
     public int updateOrderItemFromOrder(Long orderItemId, OmsOrderItem orderItem) {
         if (orderItem == null) {
             return 0;
@@ -233,6 +232,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     }
 
     @Override
+//    @Transactional
     public int removeOrderItemFromOrderById(Long orderItemId) {
         OmsOrderItem orderItem = getOrderItemById(orderItemId);
         if (orderItem == null) {
@@ -320,7 +320,11 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     }
 
     @Override
+//    @Transactional
     public int cancelOrder(OmsOrder order) {
+        if (order == null) {
+            return 0;
+        }
         List<OmsOrderItem> orderItems = getOrderItemByOrderId(order.getId());
         if (orderItems != null && !orderItems.isEmpty()) {
             for (OmsOrderItem orderItem : orderItems) {

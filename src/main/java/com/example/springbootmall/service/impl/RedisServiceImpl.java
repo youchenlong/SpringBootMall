@@ -61,16 +61,6 @@ public class RedisServiceImpl implements RedisService {
         redisTemplate.opsForZSet().add(key, value, score);
     }
 
-//    @Override
-//    public void zIncrScore(String key, Object value, double score) {
-//        redisTemplate.opsForZSet().incrementScore(key, value, score);
-//    }
-//
-//    @Override
-//    public Set<Object> zRange(String key, long start, long end) {
-//        return redisTemplate.opsForZSet().range(key, start, end);
-//    }
-
     @Override
     public Set<Object> zRevRange(String key, long start, long end) {
         return redisTemplate.opsForZSet().reverseRange(key, start, end);
@@ -79,6 +69,15 @@ public class RedisServiceImpl implements RedisService {
     @Override
     public Boolean del(String key) {
         return redisTemplate.delete(key);
+    }
+
+    @Override
+    public Long delAllByPrefix(String prefix) {
+        Set<String> keys = redisTemplate.keys(prefix + "*");
+        if (keys != null && !keys.isEmpty()) {
+            return redisTemplate.delete(keys);
+        }
+        return 0L;
     }
 
     @Override

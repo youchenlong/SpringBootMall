@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,17 +42,11 @@ public class OmsCartServiceImpl implements OmsCartService {
             return;
         }
         // delete instead of update
-        List<Object> cartItemIds = redisService.lrange(REDIS_KEY_PREFIX_CART + "allCartItemIdsOfCartId:" + cart.getId(), 0, -1);
-        for (Object cartItemId : cartItemIds){
-            redisService.del(REDIS_KEY_PREFIX_CART + "cartItemId:" + cartItemId);
-        }
-        redisService.del(REDIS_KEY_PREFIX_CART + "cartId:" + cart.getId());
-        redisService.del(REDIS_KEY_PREFIX_CART + "userId:" + cart.getUserId());
-        redisService.del(REDIS_KEY_PREFIX_CART + "allCartItemIdsOfCartId:" + cart.getId());
-        redisService.del(REDIS_KEY_PREFIX_CART + "allCartIds");
+        redisService.delAllByPrefix(REDIS_KEY_PREFIX_CART);
     }
 
     @Override
+    @Transactional
     public int addCart(OmsCart cart) {
         if (cart == null) {
             return 0;
@@ -77,6 +72,7 @@ public class OmsCartServiceImpl implements OmsCartService {
     }
 
     @Override
+    @Transactional
     public int updateCart(Long cartId, OmsCart cart) {
         if (cart == null) {
             return 0;
@@ -95,6 +91,7 @@ public class OmsCartServiceImpl implements OmsCartService {
     }
 
     @Override
+    @Transactional
     public int removeCartById(Long cartId) {
         // Cache Aside Pattern
         int result = omsCartDao.deleteByPrimaryKey(cartId);
@@ -175,6 +172,7 @@ public class OmsCartServiceImpl implements OmsCartService {
     }
 
     @Override
+    @Transactional
     public int addCartItemToCart(OmsCartItem cartItem) {
         if (cartItem == null) {
             return 0;
@@ -205,6 +203,7 @@ public class OmsCartServiceImpl implements OmsCartService {
     }
 
     @Override
+    @Transactional
     public int updateCartItemFromCart(Long cartItemId, OmsCartItem cartItem) {
         if (cartItem == null) {
             return 0;
@@ -224,6 +223,7 @@ public class OmsCartServiceImpl implements OmsCartService {
     }
 
     @Override
+    @Transactional
     public int removeCartItemFromCartById(Long cartItemId) {
         // Cache Aside Pattern
         OmsCartItem cartItem = getCartItemById(cartItemId);

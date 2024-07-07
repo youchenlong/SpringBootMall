@@ -39,8 +39,8 @@ class OmsOrderServiceTest {
 
     @Test
     void removeOrder() {
-        int result = omsOrderService.removeOrder(1L);
-        log.info("removeOrder, id={}, result={}", 1L, result);
+        int result = omsOrderService.removeOrder(2L);
+        log.info("removeOrder, id={}, result={}", 2L, result);
     }
 
     @Test
@@ -64,9 +64,9 @@ class OmsOrderServiceTest {
     @Test
     void addOrderItemToOrder() {
         OmsOrderItem omsOrderItem = new OmsOrderItem();
-        omsOrderItem.setOrderId(2L);
-        omsOrderItem.setProductId(6L);
-        omsOrderItem.setProductQuantity(6);
+        omsOrderItem.setOrderId(1L);
+        omsOrderItem.setProductId(5L);
+        omsOrderItem.setProductQuantity(10);
         int result = omsOrderService.addOrderItemToOrder(omsOrderItem);
         log.info("addOrderItemToOrder, id={}, result={}", omsOrderItem.getId(), result);
     }
@@ -81,8 +81,8 @@ class OmsOrderServiceTest {
 
     @Test
     void removeOrderItemFromOrderById() {
-        int result = omsOrderService.removeOrderItemFromOrderById(25L);
-        log.info("removeOrderItemFromOrderById, id={}, result={}", 25L, result);
+        int result = omsOrderService.removeOrderItemFromOrderById(3L);
+        log.info("removeOrderItemFromOrderById, id={}, result={}", 3L, result);
     }
 
     @Test
@@ -105,8 +105,8 @@ class OmsOrderServiceTest {
 
     @Test
     void cancelOrder() {
-        OmsOrder order = omsOrderService.getOrderById(20L);
+        OmsOrder order = omsOrderService.getOrderById(2L);
         int result = omsOrderService.cancelOrder(order);
-        log.info("cancelOrder, id={}, result={}", 20L, result);
+        log.info("cancelOrder, id={}, result={}", 2L, result);
     }
 }

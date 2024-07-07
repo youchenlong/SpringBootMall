@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,14 +33,11 @@ public class PmsBrandServiceImpl implements PmsBrandService {
     private Long REDIS_KEY_EXPIRE_BRAND;
 
     private void freeRedis() {
-        List<Object> brandIds = redisService.lrange(REDIS_KEY_PREFIX_BRAND + "allBrandIds", 0, -1);
-        for (Object brandId : brandIds) {
-            redisService.del(REDIS_KEY_PREFIX_BRAND + "brandId:" + brandId);
-        }
-        redisService.del(REDIS_KEY_PREFIX_BRAND + "allBrandIds");
+        redisService.delAllByPrefix(REDIS_KEY_PREFIX_BRAND);
     }
 
     @Override
+    @Transactional
     public int addBrand(PmsBrand brand) {
         if (brand == null) {
             return 0;
@@ -65,6 +63,7 @@ public class PmsBrandServiceImpl implements PmsBrandService {
     }
 
     @Override
+    @Transactional
     public int updateBrand(Long brandId, PmsBrand brand) {
         if (brand == null) {
             return 0;
@@ -82,6 +81,7 @@ public class PmsBrandServiceImpl implements PmsBrandService {
     }
 
     @Override
+    @Transactional
     public int removeBrandById(Long brandId) {
         // Cache Aside Pattern
         int result = pmsBrandDao.deleteByPrimaryKey(brandId);
