@@ -53,10 +53,12 @@ public class OmsCartServiceImpl implements OmsCartService {
         }
         // if cart already exists
         List<OmsCart> carts = getAllCarts();
-        for (OmsCart oldCart : carts) {
-            if (oldCart.getUserId().equals(cart.getUserId())) {
-                log.info("cart already exists");
-                return 0;
+        if (carts != null && !carts.isEmpty()) {
+            for (OmsCart oldCart : carts) {
+                if (oldCart.getUserId().equals(cart.getUserId())) {
+                    log.info("cart already exists");
+                    return 0;
+                }
             }
         }
 

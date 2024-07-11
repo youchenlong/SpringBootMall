@@ -22,6 +22,7 @@
         <mybatis-starter.version>2.2.2</mybatis-starter.version>
         <mysql-connector.version>8.0.29</mysql-connector.version>
         <springfox-swagger.version>3.0.0</springfox-swagger.version>
+        <dockerfile-maven-plugin.version>1.4.13</dockerfile-maven-plugin.version>
     </properties>
 
     <dependencies>
@@ -84,22 +85,43 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>${dockerfile-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>default</id>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>push</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <repository>${project.artifactId}</repository>
+                    <tag>${project.version}</tag>
+                    <buildArgs>
+                        <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+                    </buildArgs>
+                </configuration>
             </plugin>
         </plugins>
     </build>
 
     <repositories>
         <repository>
-            <id>aliyunmaven</id>
-            <name>aliyun</name>
-            <url>https://maven.aliyun.com/repository/public</url>
+            <id>alimaven</id>
+            <name>Aliyun Public</name>
+            <url>https://maven.aliyun.com/nexus/content/groups/public/</url>
         </repository>
         <repository>
-            <id>central2</id>
-            <name>central2</name>
-            <url>https://repo1.maven.org/maven2/</url>
+            <id>central</id>
+            <name>Maven Central</name>
+            <url>https://repo.maven.apache.org/maven2/</url>
         </repository>
     </repositories>
 

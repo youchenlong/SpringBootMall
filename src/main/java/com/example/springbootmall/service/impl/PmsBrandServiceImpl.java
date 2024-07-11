@@ -44,10 +44,12 @@ public class PmsBrandServiceImpl implements PmsBrandService {
         }
         // if brand already exists
         List<PmsBrand> brands = getAllBrand();
-        for (PmsBrand oldBrand : brands) {
-            if (oldBrand.getName().equals(brand.getName())) {
-                log.info("brand already exists");
-                return 0;
+        if (brands != null && !brands.isEmpty()) {
+            for (PmsBrand oldBrand : brands) {
+                if (oldBrand.getName().equals(brand.getName())) {
+                    log.info("brand already exists");
+                    return 0;
+                }
             }
         }
 

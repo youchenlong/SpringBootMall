@@ -42,10 +42,12 @@ public class PmsProductServiceImpl implements PmsProductService {
         }
         // if product already exists
         List<PmsProduct> products = getAllProduct();
-        for (PmsProduct oldProduct : products) {
-            if (oldProduct.getName().equals(product.getName()) && oldProduct.getBrandId().equals(product.getBrandId())) {
-                log.info("product already exists");
-                return 0;
+        if (products != null && !products.isEmpty()) {
+            for (PmsProduct oldProduct : products) {
+                if (oldProduct.getName().equals(product.getName()) && oldProduct.getBrandId().equals(product.getBrandId())) {
+                    log.info("product already exists");
+                    return 0;
+                }
             }
         }
 

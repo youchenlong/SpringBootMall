@@ -41,10 +41,12 @@ public class UmsUserServiceImpl implements UmsUserService {
         }
         // if user already exists
         List<UmsUser> users =  getAllUser();
-        for (UmsUser oldUser : users) {
-            if (oldUser.getUsername().equals(user.getUsername())) {
-                log.info("user already exist");
-                return 0;
+        if (users != null && !users.isEmpty()) {
+            for (UmsUser oldUser : users) {
+                if (oldUser.getUsername().equals(user.getUsername())) {
+                    log.info("user already exist");
+                    return 0;
+                }
             }
         }
 
