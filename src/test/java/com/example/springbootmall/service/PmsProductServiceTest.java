@@ -37,10 +37,8 @@ class PmsProductServiceTest {
     void updateProduct() {
         PmsProduct pmsProduct = pmsProductService.getProductById(3L);
         // do nothing
-        pmsProduct.setSale(0);
-        pmsProduct.setStock(1000);
         int result = pmsProductService.updateProduct(3L, pmsProduct);
-        log.info("updateProduct id={}, result={}", pmsProduct.getId(), result);
+        log.info("updateProduct id={}, result={}", 3L, result);
     }
 
     @Test
@@ -51,8 +49,8 @@ class PmsProductServiceTest {
 
     @Test
     void getProductById() {
-        PmsProduct pmsProduct = pmsProductService.getProductById(1L);
-        log.info("getProductById id={}, result={}", pmsProduct.getId(), pmsProduct);
+        PmsProduct pmsProduct = pmsProductService.getProductById(21L);
+        log.info("getProductById id={}, result={}", 21L, pmsProduct);
     }
 
     @Test

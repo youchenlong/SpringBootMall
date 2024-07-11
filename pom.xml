@@ -22,6 +22,7 @@
         <mybatis-starter.version>2.2.2</mybatis-starter.version>
         <mysql-connector.version>8.0.29</mysql-connector.version>
         <springfox-swagger.version>3.0.0</springfox-swagger.version>
+        <redisson.version>3.18.0</redisson.version>
     </properties>
 
     <dependencies>
@@ -67,6 +68,11 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+            <version>${redisson.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
         </dependency>
@@ -93,13 +99,13 @@
     <repositories>
         <repository>
             <id>aliyunmaven</id>
-            <name>aliyun</name>
-            <url>https://maven.aliyun.com/repository/public</url>
+            <name>Aliyun Central</name>
+            <url>https://maven.aliyun.com/repository/public/</url>
         </repository>
         <repository>
-            <id>central2</id>
-            <name>central2</name>
-            <url>https://repo1.maven.org/maven2/</url>
+            <id>central</id>
+            <name>Maven Central</name>
+            <url>https://repo.maven.apache.org/maven2/</url>
         </repository>
     </repositories>
 

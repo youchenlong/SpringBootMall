@@ -33,8 +33,8 @@ class OmsOrderServiceTest {
     void updateOrder() {
         OmsOrder order = omsOrderService.getOrderById(1L);
         // do nothing
-        int result = omsOrderService.updateOrder(order.getId(), order);
-        log.info("updateOrder, id={}, result={}", order.getId(), result);
+        int result = omsOrderService.updateOrder(1L, order);
+        log.info("updateOrder, id={}, result={}", 1L, result);
     }
 
     @Test
@@ -75,20 +75,20 @@ class OmsOrderServiceTest {
     void updateOrderItemFromOrder() {
         OmsOrderItem omsOrderItem = omsOrderService.getOrderItemById(1L);
         // do nothing
-        int result = omsOrderService.updateOrderItemFromOrder(omsOrderItem.getId(), omsOrderItem);
-        log.info("updateOrderItemFromOrder, id={}, result={}", omsOrderItem.getId(), result);
+        int result = omsOrderService.updateOrderItemFromOrder(1L, omsOrderItem);
+        log.info("updateOrderItemFromOrder, id={}, result={}", 1L, result);
     }
 
     @Test
     void removeOrderItemFromOrderById() {
-        int result = omsOrderService.removeOrderItemFromOrderById(3L);
-        log.info("removeOrderItemFromOrderById, id={}, result={}", 3L, result);
+        int result = omsOrderService.removeOrderItemFromOrderById(1L);
+        log.info("removeOrderItemFromOrderById, id={}, result={}", 1L, result);
     }
 
     @Test
     void getOrderItemById() {
-        OmsOrderItem omsOrderItem = omsOrderService.getOrderItemById(17L);
-        log.info("getOrderItemById, id={}, result={}", omsOrderItem.getId(), omsOrderItem);
+        OmsOrderItem omsOrderItem = omsOrderService.getOrderItemById(1L);
+        log.info("getOrderItemById, id={}, result={}", 1L, omsOrderItem);
     }
 
     @Test
@@ -105,8 +105,8 @@ class OmsOrderServiceTest {
 
     @Test
     void cancelOrder() {
-        OmsOrder order = omsOrderService.getOrderById(2L);
+        OmsOrder order = omsOrderService.getOrderById(1L);
         int result = omsOrderService.cancelOrder(order);
-        log.info("cancelOrder, id={}, result={}", 2L, result);
+        log.info("cancelOrder, id={}, result={}", 1L, result);
     }
 }

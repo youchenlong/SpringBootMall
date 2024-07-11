@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.convert.Convert;
 import com.example.springbootmall.dao.PmsBrandDao;
 import com.example.springbootmall.model.PmsBrand;
+import com.example.springbootmall.service.BloomFilterService;
 import com.example.springbootmall.service.PmsBrandService;
 import com.example.springbootmall.service.RedisService;
 import org.slf4j.Logger;
@@ -31,13 +32,14 @@ public class PmsBrandServiceImpl implements PmsBrandService {
     private String REDIS_KEY_PREFIX_BRAND;
     @Value("${redis.key.expire.brand}")
     private Long REDIS_KEY_EXPIRE_BRAND;
+    @Autowired
+    private BloomFilterService bloomFilterService;
 
     private void freeRedis() {
         redisService.delAllByPrefix(REDIS_KEY_PREFIX_BRAND);
     }
 
     @Override
-    @Transactional
     public int addBrand(PmsBrand brand) {
         if (brand == null) {
             return 0;
@@ -57,13 +59,13 @@ public class PmsBrandServiceImpl implements PmsBrandService {
             log.info("add brand failed");
             return 0;
         }
+        bloomFilterService.add(REDIS_KEY_EXPIRE_BRAND + "brandId:" + brand.getId());
         freeRedis();
 
         return result;
     }
 
     @Override
-    @Transactional
     public int updateBrand(Long brandId, PmsBrand brand) {
         if (brand == null) {
             return 0;
@@ -81,7 +83,6 @@ public class PmsBrandServiceImpl implements PmsBrandService {
     }
 
     @Override
-    @Transactional
     public int removeBrandById(Long brandId) {
         // Cache Aside Pattern
         int result = pmsBrandDao.deleteByPrimaryKey(brandId);
@@ -96,6 +97,10 @@ public class PmsBrandServiceImpl implements PmsBrandService {
 
     @Override
     public PmsBrand getBrandById(Long brandId) {
+        // check in bloom filter
+        if (!bloomFilterService.contains(REDIS_KEY_EXPIRE_BRAND + "brandId:" + brandId)) {
+            return null;
+        }
         // search in redis first
         Map<Object, Object> map = redisService.hGetAll(REDIS_KEY_PREFIX_BRAND + "brandId:" + brandId);
         PmsBrand brand = BeanUtil.fillBeanWithMap(map, new PmsBrand(), false);

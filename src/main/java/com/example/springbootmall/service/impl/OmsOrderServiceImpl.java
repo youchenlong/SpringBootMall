@@ -4,13 +4,11 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.convert.Convert;
 import com.example.springbootmall.dao.OmsOrderDao;
 import com.example.springbootmall.dao.OmsOrderItemDao;
-import com.example.springbootmall.dao.PmsProductDao;
 import com.example.springbootmall.model.OmsOrder;
 import com.example.springbootmall.model.OmsOrderItem;
 import com.example.springbootmall.model.PmsProduct;
-import com.example.springbootmall.service.OmsOrderService;
-import com.example.springbootmall.service.PmsProductService;
-import com.example.springbootmall.service.RedisService;
+import com.example.springbootmall.model.UmsUser;
+import com.example.springbootmall.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,17 +27,21 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     private OmsOrderDao omsOrderDao;
     @Autowired
     private OmsOrderItemDao omsOrderItemDao;
-//    @Autowired
-//    private PmsProductDao pmsProductDao;
+
     @Autowired
     private PmsProductService pmsProductService;
-
     @Autowired
     private RedisService redisService;
     @Value("${redis.key.prefix.order}")
     private String REDIS_KEY_PREFIX_ORDER;
     @Value("${redis.key.expire.order}")
     private int REDIS_KEY_EXPIRE_ORDER;
+    @Autowired
+    private UmsUserService umsUserService;
+    @Autowired
+    private PmsProductService productService;
+    @Autowired
+    private BloomFilterService bloomFilterService;
 
     private void freeRedis(OmsOrder order) {
         if (order == null) {
@@ -50,9 +52,13 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     }
 
     @Override
-//    @Transactional
     public int addOrder(OmsOrder order) {
         if (order == null) {
+            return 0;
+        }
+        // if user not exists
+        UmsUser user = umsUserService.getUserById(order.getUserId());
+        if (user == null) {
             return 0;
         }
         // Cache Aside Pattern
@@ -61,13 +67,13 @@ public class OmsOrderServiceImpl implements OmsOrderService {
             log.info("add order failed");
             return 0;
         }
+        bloomFilterService.add(REDIS_KEY_EXPIRE_ORDER + "orderId:" + order.getId());
         freeRedis(order);
 
         return result;
     }
 
     @Override
-//    @Transactional
     public int updateOrder(Long orderId, OmsOrder order) {
         if (order == null) {
             return 0;
@@ -86,7 +92,6 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     }
 
     @Override
-//    @Transactional
     public int removeOrder(Long orderId) {
         // pay attention to the difference between `removeOrder` and `cancelOrder`
         // Cache Aside Pattern
@@ -102,6 +107,10 @@ public class OmsOrderServiceImpl implements OmsOrderService {
 
     @Override
     public OmsOrder getOrderById(Long orderId) {
+        // check in bloom filter
+        if (!bloomFilterService.contains(REDIS_KEY_PREFIX_ORDER + "orderId:" + orderId)) {
+            return null;
+        }
         // search in redis first
         Map<Object, Object> map = redisService.hGetAll(REDIS_KEY_PREFIX_ORDER + "orderId:" + orderId);
         OmsOrder order = BeanUtil.fillBeanWithMap(map, new OmsOrder(), false);
@@ -174,18 +183,21 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     }
 
     @Override
-//    @Transactional
     public int addOrderItemToOrder(OmsOrderItem orderItem) {
         if (orderItem == null) {
             return 0;
         }
+        // if order or product not exists
+        OmsOrder order = getOrderById(orderItem.getOrderId());
+        PmsProduct product = productService.getProductById(orderItem.getProductId());
+        if (order == null || product == null) {
+            return 0;
+        }
         // if orderItem already exists
-        Long productId = orderItem.getProductId();
-        List<OmsOrderItem> orderItems = getOrderItemByOrderId(orderItem.getOrderId());
+        List<OmsOrderItem> orderItems = getOrderItemByOrderId(order.getId());
         if (orderItems != null && !orderItems.isEmpty()) {
             for (OmsOrderItem oldOrderItem : orderItems) {
-                if (oldOrderItem.getProductId().equals(productId)) {
-                    PmsProduct product = pmsProductService.getProductById(orderItem.getProductId());
+                if (oldOrderItem.getProductId().equals(product.getId())) {
                     product.setSale(product.getSale() + orderItem.getProductQuantity());
                     product.setStock(product.getStock() - orderItem.getProductQuantity());
                     pmsProductService.updateProduct(product.getId(), product);
@@ -197,7 +209,6 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         }
 
         // Cache Aside Pattern
-        PmsProduct product = pmsProductService.getProductById(productId);
         product.setSale(product.getSale() + orderItem.getProductQuantity());
         product.setStock(product.getStock() - orderItem.getProductQuantity());
         pmsProductService.updateProduct(product.getId(), product);
@@ -206,39 +217,38 @@ public class OmsOrderServiceImpl implements OmsOrderService {
             log.info("add orderItem failed");
             return 0;
         }
-        OmsOrder order = getOrderById(orderItem.getOrderId());
+        bloomFilterService.add(REDIS_KEY_PREFIX_ORDER + "orderItemId:" + orderItem.getId());
         updateOrder(order.getId(), order);
         freeRedis(order);
         return result;
     }
 
     @Override
-//    @Transactional
     public int updateOrderItemFromOrder(Long orderItemId, OmsOrderItem orderItem) {
         if (orderItem == null) {
             return 0;
         }
         // Cache Aside Pattern
         orderItem.setId(orderItemId);
+        OmsOrder order = getOrderById(orderItem.getOrderId());
         int result = omsOrderItemDao.update(orderItem);
         if (result == 0) {
             log.info("update orderItem failed");
             return 0;
         }
-        OmsOrder order = getOrderById(orderItem.getOrderId());
         updateOrder(order.getId(), order);
         freeRedis(order);
         return result;
     }
 
     @Override
-//    @Transactional
     public int removeOrderItemFromOrderById(Long orderItemId) {
         OmsOrderItem orderItem = getOrderItemById(orderItemId);
         if (orderItem == null) {
             return 0;
         }
         // Cache Aside Pattern
+        OmsOrder order = getOrderById(orderItem.getOrderId());
         PmsProduct product = pmsProductService.getProductById(orderItem.getProductId());
         product.setSale(product.getSale() - orderItem.getProductQuantity());
         product.setStock(product.getStock() + orderItem.getProductQuantity());
@@ -248,7 +258,6 @@ public class OmsOrderServiceImpl implements OmsOrderService {
             log.info("remove orderItem failed");
             return 0;
         }
-        OmsOrder order = getOrderById(orderItem.getOrderId());
         updateOrder(order.getId(), order);
         freeRedis(order);
         return result;
@@ -256,6 +265,10 @@ public class OmsOrderServiceImpl implements OmsOrderService {
 
     @Override
     public OmsOrderItem getOrderItemById(Long orderItemId) {
+        // check in bloom filter
+        if (!bloomFilterService.contains(REDIS_KEY_PREFIX_ORDER + "orderItemId:" + orderItemId)) {
+            return null;
+        }
         // search in redis first
         Map<Object, Object> map = redisService.hGetAll(REDIS_KEY_PREFIX_ORDER + "orderItemId:" + orderItemId);
         OmsOrderItem orderItem = BeanUtil.fillBeanWithMap(map, new OmsOrderItem(), false);
@@ -320,7 +333,6 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     }
 
     @Override
-//    @Transactional
     public int cancelOrder(OmsOrder order) {
         if (order == null) {
             return 0;

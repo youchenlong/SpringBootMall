@@ -33,7 +33,7 @@ class OmsCartServiceTest {
     void updateCart() {
         OmsCart omsCart = omsCartService.getCartById(1L);
         int result = omsCartService.updateCart(1L, omsCart);
-        log.info("update id={}, result={}", omsCart.getId(), result);
+        log.info("update id={}, result={}", 1L, result);
     }
 
     @Test

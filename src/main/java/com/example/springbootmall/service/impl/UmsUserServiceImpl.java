@@ -34,7 +34,6 @@ public class UmsUserServiceImpl implements UmsUserService {
     private Long REDIS_KEY_EXPIRE_AUTH;
 
     @Override
-    @Transactional
     public int register(UmsUser user) {
         if (user == null) {
             return 0;
@@ -47,7 +46,6 @@ public class UmsUserServiceImpl implements UmsUserService {
                 return 0;
             }
         }
-
         // password encode
         String encodePassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodePassword);
@@ -61,7 +59,6 @@ public class UmsUserServiceImpl implements UmsUserService {
     }
 
     @Override
-    @Transactional
     public int update(Long userId, UmsUser user) {
         if (user == null) {
             return 0;
@@ -77,7 +74,6 @@ public class UmsUserServiceImpl implements UmsUserService {
     }
 
     @Override
-    @Transactional
     public int delete(Long userId) {
         int result = umsUserDao.deleteByPrimaryKey(userId);
         if (result == 0) {

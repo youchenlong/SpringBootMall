@@ -52,6 +52,8 @@ class PmsBrandServiceTest {
     @Test
     void getAllBrand() {
         List<PmsBrand> pmsBrands = pmsBrandService.getAllBrand();
-        log.info("get all id={}, result:{}", 1L, pmsBrands);
+        for (PmsBrand brand : pmsBrands) {
+            log.info("get id={}, brand:{}", brand.getId(), brand);
+        }
     }
 }

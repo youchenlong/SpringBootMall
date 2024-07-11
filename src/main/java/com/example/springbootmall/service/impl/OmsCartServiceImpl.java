@@ -6,8 +6,9 @@ import com.example.springbootmall.dao.OmsCartDao;
 import com.example.springbootmall.dao.OmsCartItemDao;
 import com.example.springbootmall.model.OmsCart;
 import com.example.springbootmall.model.OmsCartItem;
-import com.example.springbootmall.service.OmsCartService;
-import com.example.springbootmall.service.RedisService;
+import com.example.springbootmall.model.PmsProduct;
+import com.example.springbootmall.model.UmsUser;
+import com.example.springbootmall.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,12 @@ public class OmsCartServiceImpl implements OmsCartService {
     private String REDIS_KEY_PREFIX_CART;
     @Value("${redis.key.expire.cart}")
     private Long REDIS_KEY_EXPIRE_CART;
+    @Autowired
+    private UmsUserService umsUserService;
+    @Autowired
+    private PmsProductService pmsProductService;
+    @Autowired
+    private BloomFilterService bloomFilterService;
 
     private void freeRedis(OmsCart cart) {
         if (cart == null) {
@@ -46,9 +53,13 @@ public class OmsCartServiceImpl implements OmsCartService {
     }
 
     @Override
-    @Transactional
     public int addCart(OmsCart cart) {
         if (cart == null) {
+            return 0;
+        }
+        // if user not exists
+        UmsUser user = umsUserService.getUserById(cart.getUserId());
+        if (user == null) {
             return 0;
         }
         // if cart already exists
@@ -66,13 +77,13 @@ public class OmsCartServiceImpl implements OmsCartService {
             log.info("add cart failed");
             return 0;
         }
+        bloomFilterService.add(REDIS_KEY_EXPIRE_CART + "cartId:" + cart.getId());
         freeRedis(cart);
 
         return result;
     }
 
     @Override
-    @Transactional
     public int updateCart(Long cartId, OmsCart cart) {
         if (cart == null) {
             return 0;
@@ -91,7 +102,6 @@ public class OmsCartServiceImpl implements OmsCartService {
     }
 
     @Override
-    @Transactional
     public int removeCartById(Long cartId) {
         // Cache Aside Pattern
         int result = omsCartDao.deleteByPrimaryKey(cartId);
@@ -106,6 +116,10 @@ public class OmsCartServiceImpl implements OmsCartService {
 
     @Override
     public OmsCart getCartById(Long cartId) {
+        // check in bloom filter
+        if (!bloomFilterService.contains(REDIS_KEY_PREFIX_CART + "cartId:" + cartId)) {
+            return null;
+        }
         // search in redis first
         Map<Object, Object> map = redisService.hGetAll(REDIS_KEY_PREFIX_CART + "cartId:" + cartId);
         OmsCart cart = BeanUtil.fillBeanWithMap(map, new OmsCart(), false);
@@ -172,17 +186,21 @@ public class OmsCartServiceImpl implements OmsCartService {
     }
 
     @Override
-    @Transactional
     public int addCartItemToCart(OmsCartItem cartItem) {
         if (cartItem == null) {
             return 0;
         }
+        // if cart or product not exists
+        OmsCart cart = getCartById(cartItem.getCartId());
+        PmsProduct product = pmsProductService.getProductById(cartItem.getProductId());
+        if (cart == null || product == null) {
+            return 0;
+        }
         // if product already exists
-        Long productId = cartItem.getProductId();
-        List<OmsCartItem> cartItems = getCartItemByCartId(cartItem.getCartId());
+        List<OmsCartItem> cartItems = getCartItemByCartId(cart.getId());
         if (cartItems != null && !cartItems.isEmpty()) {
             for (OmsCartItem oldCartItem : cartItems) {
-                if (oldCartItem.getProductId().equals(productId)) {
+                if (oldCartItem.getProductId().equals(product.getId())) {
                     cartItem.setProductQuantity(cartItem.getProductQuantity() + oldCartItem.getProductQuantity());
                     cartItem.setId(oldCartItem.getId());
                     return updateCartItemFromCart(cartItem.getId(), cartItem);
@@ -196,14 +214,13 @@ public class OmsCartServiceImpl implements OmsCartService {
             log.info("add cartItem failed");
             return 0;
         }
-        OmsCart cart = getCartById(cartItem.getCartId());
+        bloomFilterService.add(REDIS_KEY_EXPIRE_CART + "cartItemId:" + cartItem.getId());
         updateCart(cart.getId(), cart);
         freeRedis(cart);
         return result;
     }
 
     @Override
-    @Transactional
     public int updateCartItemFromCart(Long cartItemId, OmsCartItem cartItem) {
         if (cartItem == null) {
             return 0;
@@ -211,28 +228,27 @@ public class OmsCartServiceImpl implements OmsCartService {
 
         // Cache Aside Pattern
         cartItem.setId(cartItemId);
+        OmsCart cart = getCartById(cartItem.getCartId());
         int result = omsCartItemDao.update(cartItem);
         if (result == 0){
             log.info("update cartItem failed");
             return 0;
         }
-        OmsCart cart = getCartById(cartItem.getCartId());
         updateCart(cart.getId(), cart);
         freeRedis(cart);
         return result;
     }
 
     @Override
-    @Transactional
     public int removeCartItemFromCartById(Long cartItemId) {
         // Cache Aside Pattern
         OmsCartItem cartItem = getCartItemById(cartItemId);
+        OmsCart cart = getCartById(cartItem.getCartId());
         int result = omsCartItemDao.deleteByPrimaryKey(cartItemId);
         if (result == 0){
             log.info("remove cartItem failed");
             return 0;
         }
-        OmsCart cart = getCartById(cartItem.getCartId());
         updateCart(cart.getId(), cart);
         freeRedis(cart);
         return result;
@@ -240,6 +256,10 @@ public class OmsCartServiceImpl implements OmsCartService {
 
     @Override
     public OmsCartItem getCartItemById(Long cartItemId) {
+        // check in bloom filter
+        if (!bloomFilterService.contains(REDIS_KEY_PREFIX_CART + "cartItemId:" + cartItemId)) {
+            return null;
+        }
         // search in redis first
         Map<Object, Object> map = redisService.hGetAll(REDIS_KEY_PREFIX_CART + "cartItemId:" + cartItemId);
         OmsCartItem cartItem = BeanUtil.fillBeanWithMap(map, new OmsCartItem(), false);

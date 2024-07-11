@@ -3,7 +3,10 @@ package com.example.springbootmall.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.convert.Convert;
 import com.example.springbootmall.dao.PmsProductDao;
+import com.example.springbootmall.model.PmsBrand;
 import com.example.springbootmall.model.PmsProduct;
+import com.example.springbootmall.service.BloomFilterService;
+import com.example.springbootmall.service.PmsBrandService;
 import com.example.springbootmall.service.PmsProductService;
 import com.example.springbootmall.service.RedisService;
 import org.slf4j.Logger;
@@ -29,15 +32,23 @@ public class PmsProductServiceImpl implements PmsProductService {
     private String REDIS_KEY_PREFIX_PRODUCT;
     @Value("${redis.key.expire.product}")
     private Long REDIS_KEY_EXPIRE_PRODUCT;
+    @Autowired
+    private PmsBrandService pmsBrandService;
+    @Autowired
+    private BloomFilterService bloomFilterService;
 
     private void freeRedis() {
         redisService.delAllByPrefix(REDIS_KEY_PREFIX_PRODUCT);
     }
 
     @Override
-//    @Transactional
     public int addProduct(PmsProduct product) {
         if (product == null) {
+            return 0;
+        }
+        // if brand not exists
+        PmsBrand brand = pmsBrandService.getBrandById(product.getBrandId());
+        if (brand == null) {
             return 0;
         }
         // if product already exists
@@ -55,13 +66,13 @@ public class PmsProductServiceImpl implements PmsProductService {
             log.info("add product failed");
             return 0;
         }
+        bloomFilterService.add(REDIS_KEY_EXPIRE_PRODUCT + "productId:" + product.getId());
         freeRedis();
 
         return result;
     }
 
     @Override
-//    @Transactional
     public int updateProduct(Long productId, PmsProduct product) {
         if (product == null) {
             return 0;
@@ -79,7 +90,6 @@ public class PmsProductServiceImpl implements PmsProductService {
     }
 
     @Override
-//    @Transactional
     public int removeProductById(Long productId) {
         // Cache Aside Pattern
         int result = pmsProductDao.deleteByPrimaryKey(productId);
@@ -94,6 +104,10 @@ public class PmsProductServiceImpl implements PmsProductService {
 
     @Override
     public PmsProduct getProductById(Long productId) {
+        // check in bloom filter
+        if (!bloomFilterService.contains(REDIS_KEY_PREFIX_PRODUCT + "productId:" + productId)) {
+            return null;
+        }
         // search in redis first
         Map<Object, Object> map = redisService.hGetAll(REDIS_KEY_PREFIX_PRODUCT + "productId:" + productId);
         PmsProduct product = BeanUtil.fillBeanWithMap(map, new PmsProduct(), false);

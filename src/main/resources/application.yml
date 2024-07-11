@@ -41,7 +41,9 @@ redis:
       product: 3600
       cart: 3600
       order: 3600
-
+bloom-filter:
+  expected-insertions: 10000000
+  fpp: 0.01
 
 
 mybatis:
