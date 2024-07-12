@@ -11,9 +11,22 @@ spring:
       matching-strategy: ant_path_matcher
   redis:
     host: localhost
-    database: 0
     port: 6379
+    database: 0
     password:
+#    database: 0
+#    password: 123456
+#    cluster:
+#      nodes:
+#        - 172.18.0.2:6379
+#        - 172.18.0.3:6379
+#        - 172.18.0.4:6379
+#    sentinel:
+#      master: mymaster
+#      nodes:
+#        - 172.18.0.5:26379
+#        - 172.18.0.6:26379
+#        - 172.18.0.7:26379
     lettuce:
       pool:
         max-active: 8 # 连接池最大连接数
