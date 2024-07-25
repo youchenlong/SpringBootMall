@@ -73,6 +73,7 @@
 
 ### 项目结构
 
+```text
 ├─docs
 │  ├─img        # 图片
 │  ├─intro      # 介绍
@@ -97,6 +98,7 @@
 ├─Dockerfile
 ├─pom.xml
 └─README.md
+```
 
 ### 数据库
 
