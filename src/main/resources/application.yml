@@ -1,11 +1,21 @@
 server:
   port: 8080
+  tomcat:
+    uri-encoding: UTF-8
+    max-connections: 8192
+    threads:
+      max: 200
+      min-spare: 10
+
 
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/mall_tiny?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
     username: root
     password: root
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 10
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -27,18 +37,36 @@ spring:
 #        - 172.18.0.5:26379
 #        - 172.18.0.6:26379
 #        - 172.18.0.7:26379
-    lettuce:
-      pool:
-        max-active: 8 # 连接池最大连接数
-        max-idle: 8 # 连接池最大空闲连接数
-        min-idle: 0 # 连接池最小空闲连接数
-        max-wait: -1ms # 连接池最大阻塞等待时间，负值表示没有限制
+#    lettuce:
+#      pool:
+#        max-active: 8 # 连接池最大连接数
+#        max-idle: 8 # 连接池最大空闲连接数
+#        min-idle: 0 # 连接池最小空闲连接数
+#        max-wait: -1ms # 连接池最大阻塞等待时间，负值表示没有限制
   data:
     elasticsearch:
       repositories:
         enabled: true
   elasticsearch:
     uris: http://localhost:9200
+
+
+mybatis:
+  mapper-locations: classpath:dao/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+
+# 异步线程配置
+async:
+  executor:
+    thread:
+      core_pool_size: 8 # 核心线程数
+      max_pool_size: 20 # 最大线程数
+      queue_capacity: 10 # 队列大小
+      name:
+        prefix: async-service-
+
 
 redis:
   key:
@@ -54,20 +82,3 @@ redis:
       product: 3600
       cart: 3600
       order: 3600
-
-
-
-mybatis:
-  mapper-locations: classpath:dao/*.xml
-  configuration:
-    map-underscore-to-camel-case: true
-
-# 异步线程配置
-async:
-  executor:
-    thread:
-      core_pool_size: 1000 # 核心线程数
-      max_pool_size: 2000 # 最大线程数
-      queue_capacity: 10000 # 队列大小
-      name:
-        prefix: async-service-
