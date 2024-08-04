@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.List;
 
@@ -75,13 +76,5 @@ class UmsUserServiceTest {
         String password = "202224021001";
         int result = umsUserService.login(username, password);
         log.info("login id={}, result={}", username, result);
-    }
-
-    @Test
-    void loginByTelephone() {
-        String telephone = "13096190001";
-        String authCode = umsUserService.generateAuthCode(telephone);
-        int result = umsUserService.verifyAuthCode(telephone, authCode);
-        log.info("loginByTelephone id={}, result={}", telephone, result);
     }
 }

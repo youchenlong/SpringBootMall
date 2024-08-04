@@ -6,6 +6,9 @@ server:
     threads:
       max: 200
       min-spare: 10
+  servlet:
+    session:
+      timeout: 60s
 
 
 spring:

@@ -1,20 +1,18 @@
 package com.example.springbootmall.service.impl;
 
-import com.example.springbootmall.component.CommonResult;
+import cn.hutool.core.util.RandomUtil;
 import com.example.springbootmall.dao.UmsUserDao;
 import com.example.springbootmall.model.UmsUser;
-import com.example.springbootmall.service.RedisService;
 import com.example.springbootmall.service.UmsUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
-import java.util.Random;
 
 @Service
 public class UmsUserServiceImpl implements UmsUserService {
@@ -25,13 +23,6 @@ public class UmsUserServiceImpl implements UmsUserService {
     private UmsUserDao umsUserDao;
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private RedisService redisService;
-    @Value("${redis.key.prefix.auth}")
-    private String REDIS_KEY_PREFIX_AUTH;
-    @Value("${redis.key.expire.auth}")
-    private Long REDIS_KEY_EXPIRE_AUTH;
 
     @Override
     @Transactional
@@ -53,13 +44,7 @@ public class UmsUserServiceImpl implements UmsUserService {
         // password encode
         String encodePassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodePassword);
-        int result = umsUserDao.insert(user);
-        if (result == 0) {
-            log.info("register failed");
-            return 0;
-        }
-
-        return result;
+        return umsUserDao.insert(user);
     }
 
     @Override
@@ -69,25 +54,13 @@ public class UmsUserServiceImpl implements UmsUserService {
             return 0;
         }
         user.setId(userId);
-        int result = umsUserDao.update(user);
-        if (result == 0) {
-            log.info("update failed");
-            return 0;
-        }
-
-        return result;
+        return umsUserDao.update(user);
     }
 
     @Override
     @Transactional
     public int delete(Long userId) {
-        int result = umsUserDao.deleteByPrimaryKey(userId);
-        if (result == 0) {
-            log.info("delete failed");
-            return 0;
-        }
-
-        return result;
+        return umsUserDao.deleteByPrimaryKey(userId);
     }
 
     @Override
@@ -122,32 +95,30 @@ public class UmsUserServiceImpl implements UmsUserService {
     }
 
     @Override
-    public String generateAuthCode(String telephone){
-        StringBuilder sb = new StringBuilder();
-        Random random = new Random();
-        for (int i = 0; i < 6; i++) {
-            sb.append(random.nextInt(10));
-        }
-        redisService.set(REDIS_KEY_PREFIX_AUTH + telephone, sb.toString());
-        redisService.expire(REDIS_KEY_PREFIX_AUTH + telephone, REDIS_KEY_EXPIRE_AUTH);
-        return sb.toString();
+    public String generateAuthCode(String telephone, HttpSession session){
+
+        String authCode = RandomUtil.randomNumbers(6);
+        session.setAttribute("telephone", telephone);
+        session.setAttribute("authCode", authCode);
+        return authCode;
     }
 
     @Override
-    public int verifyAuthCode(String telephone, String authCode){
+    public int verifyAuthCode(String telephone, String authCode, HttpSession session){
         // authCode is empty
         if (authCode == null) {
             log.info("auth code is empty");
             return 0;
         }
         // realAuthCode expires or not exists
-        String realAuthCode = (String)redisService.get(REDIS_KEY_PREFIX_AUTH + telephone);
+        String realTelephone = session.getAttribute("telephone").toString();
+        String realAuthCode = session.getAttribute("authCode").toString();
         if (realAuthCode == null){
             log.info("generate auth code first");
             return 0;
         }
         // authCode not match
-        if(!authCode.equals(realAuthCode)){
+        if(!authCode.equals(realAuthCode) || !telephone.equals(realTelephone)){
             log.info("auth code is not correct");
             return 0;
         }
