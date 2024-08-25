@@ -1,7 +1,9 @@
 package com.example.springbootmall.service.impl;
 
 import com.example.springbootmall.component.CommonResult;
+import com.example.springbootmall.component.JwtUtils;
 import com.example.springbootmall.dao.UmsUserDao;
+import com.example.springbootmall.domain.AdminUserDetails;
 import com.example.springbootmall.model.UmsUser;
 import com.example.springbootmall.service.RedisService;
 import com.example.springbootmall.service.UmsUserService;
@@ -9,10 +11,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.management.remote.JMXAuthenticator;
 import java.util.List;
 import java.util.Random;
 
@@ -25,7 +32,8 @@ public class UmsUserServiceImpl implements UmsUserService {
     private UmsUserDao umsUserDao;
     @Autowired
     private PasswordEncoder passwordEncoder;
-
+    @Autowired
+    private JwtUtils jwtUtils;
     @Autowired
     private RedisService redisService;
     @Value("${redis.key.prefix.auth}")
@@ -35,17 +43,14 @@ public class UmsUserServiceImpl implements UmsUserService {
 
     @Override
     @Transactional
-    public int register(UmsUser user) {
-        if (user == null) {
-            return 0;
-        }
+    public UmsUser register(UmsUser user) {
         // if user already exists
         List<UmsUser> users =  getAllUser();
         if (users != null && !users.isEmpty()) {
             for (UmsUser oldUser : users) {
                 if (oldUser.getUsername().equals(user.getUsername())) {
                     log.info("user already exist");
-                    return 0;
+                    return null;
                 }
             }
         }
@@ -56,10 +61,55 @@ public class UmsUserServiceImpl implements UmsUserService {
         int result = umsUserDao.insert(user);
         if (result == 0) {
             log.info("register failed");
+            return null;
+        }
+        return user;
+    }
+
+    @Override
+    public String login(String username, String password) {
+        UmsUser user = getUserByUsername(username);
+        UserDetails userDetails = new AdminUserDetails(user);
+        if (!passwordEncoder.matches(password, userDetails.getPassword())) {
+            return null;
+        }
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = jwtUtils.generateToken(userDetails);
+        return token;
+    }
+
+    @Override
+    public String generateAuthCode(String telephone){
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < 6; i++) {
+            sb.append(random.nextInt(10));
+        }
+        redisService.set(REDIS_KEY_PREFIX_AUTH + telephone, sb.toString());
+        redisService.expire(REDIS_KEY_PREFIX_AUTH + telephone, REDIS_KEY_EXPIRE_AUTH);
+        return sb.toString();
+    }
+
+    @Override
+    public int verifyAuthCode(String telephone, String authCode){
+        // authCode is empty
+        if (authCode == null) {
+            log.info("auth code is empty");
             return 0;
         }
-
-        return result;
+        // realAuthCode expires or not exists
+        String realAuthCode = (String)redisService.get(REDIS_KEY_PREFIX_AUTH + telephone);
+        if (realAuthCode == null){
+            log.info("generate auth code first");
+            return 0;
+        }
+        // authCode not match
+        if(!authCode.equals(realAuthCode)){
+            log.info("auth code is not correct");
+            return 0;
+        }
+        return 1;
     }
 
     @Override
@@ -103,54 +153,5 @@ public class UmsUserServiceImpl implements UmsUserService {
     @Override
     public List<UmsUser> getAllUser() {
         return umsUserDao.selectAll();
-    }
-
-    @Override
-    public int login(String username, String password) {
-        UmsUser user = getUserByUsername(username);
-        // if user not exists
-        if (user == null) {
-            log.info("user not found");
-            return 0;
-        }
-        // if password is not correct
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            log.info("password is not correct");
-            return 0;
-        }
-        return 1;
-    }
-
-    @Override
-    public String generateAuthCode(String telephone){
-        StringBuilder sb = new StringBuilder();
-        Random random = new Random();
-        for (int i = 0; i < 6; i++) {
-            sb.append(random.nextInt(10));
-        }
-        redisService.set(REDIS_KEY_PREFIX_AUTH + telephone, sb.toString());
-        redisService.expire(REDIS_KEY_PREFIX_AUTH + telephone, REDIS_KEY_EXPIRE_AUTH);
-        return sb.toString();
-    }
-
-    @Override
-    public int verifyAuthCode(String telephone, String authCode){
-        // authCode is empty
-        if (authCode == null) {
-            log.info("auth code is empty");
-            return 0;
-        }
-        // realAuthCode expires or not exists
-        String realAuthCode = (String)redisService.get(REDIS_KEY_PREFIX_AUTH + telephone);
-        if (realAuthCode == null){
-            log.info("generate auth code first");
-            return 0;
-        }
-        // authCode not match
-        if(!authCode.equals(realAuthCode)){
-            log.info("auth code is not correct");
-            return 0;
-        }
-        return 1;
     }
 }

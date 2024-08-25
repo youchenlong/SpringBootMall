@@ -9,14 +9,16 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMappi
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact;
+import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.spring.web.plugins.WebFluxRequestHandlerProvider;
 import springfox.documentation.spring.web.plugins.WebMvcRequestHandlerProvider;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +32,10 @@ public class Swagger2Config {
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.example.springbootmall.controller"))
                 .paths(PathSelectors.any())
-                .build();
+                .build()
+                // 添加登录认证
+                .securitySchemes(securitySchemes())
+                .securityContexts(securityContexts());
     }
 
     private ApiInfo apiInfo() {
@@ -40,6 +45,36 @@ public class Swagger2Config {
                 .contact(new Contact("ycl", null, null))
                 .version("1.0")
                 .build();
+    }
+
+    private List<SecurityScheme> securitySchemes() {
+        // 设置请求头信息
+        List<SecurityScheme> result = new ArrayList<>();
+        ApiKey apiKey = new ApiKey("Authorization", "Authorization", "header");
+        result.add(apiKey);
+        return result;
+    }
+
+    private List<SecurityContext> securityContexts() {
+        return Arrays.asList(
+                getContextByPath("/brand/.*"),
+                getContextByPath("/product/.*"),
+                getContextByPath("/order/.*")
+        );
+    }
+
+    private SecurityContext getContextByPath(String pathRegex) {
+        return SecurityContext.builder()
+                .securityReferences(defaultAuth())
+                .forPaths(PathSelectors.regex(pathRegex))
+                .build();
+    }
+
+    private List<SecurityReference> defaultAuth() {
+        AuthorizationScope globalScope = new AuthorizationScope("global", "accessEverything");
+        return Arrays.asList(
+                new SecurityReference("Authorization", new AuthorizationScope[]{globalScope})
+        );
     }
 
     @Bean

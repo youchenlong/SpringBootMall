@@ -30,7 +30,7 @@ class UmsUserServiceTest {
         umsUser.setGender(0);
         umsUser.setCreateTime(new Date());
         umsUser.setBirthday(new Date());
-        int result = umsUserService.register(umsUser);
+        UmsUser result = umsUserService.register(umsUser);
         log.info("register id={}, result={}", umsUser.getId(), result);
 
     }
@@ -73,7 +73,7 @@ class UmsUserServiceTest {
     void login() {
         String username = "202224021001";
         String password = "202224021001";
-        int result = umsUserService.login(username, password);
+        String result = umsUserService.login(username, password);
         log.info("login id={}, result={}", username, result);
     }
 

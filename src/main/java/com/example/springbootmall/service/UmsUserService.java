@@ -6,13 +6,13 @@ import com.example.springbootmall.model.UmsUser;
 import java.util.List;
 
 public interface UmsUserService {
-    int register(UmsUser user);
+    UmsUser register(UmsUser user);
+    String login(String username, String password);
+    String generateAuthCode(String telephone);
+    int verifyAuthCode(String telephone, String authCode);
     int update(Long userId, UmsUser user);
     int delete(Long userId);
     UmsUser getUserById(Long userId);
     UmsUser getUserByUsername(String username);
     List<UmsUser> getAllUser();
-    int login(String username, String password);
-    String generateAuthCode(String telephone);
-    int verifyAuthCode(String telephone, String authCode);
 }
