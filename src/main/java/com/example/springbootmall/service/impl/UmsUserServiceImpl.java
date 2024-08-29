@@ -75,9 +75,7 @@ public class UmsUserServiceImpl implements UmsUserService {
         }
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtUtils.generateToken(userDetails);
-        System.out.println("token: " + token);
-        return token;
+        return jwtUtils.generateToken(userDetails);
     }
 
     @Override

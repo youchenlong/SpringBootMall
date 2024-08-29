@@ -2,7 +2,7 @@
 
 ### 项目介绍
 
-商城Demo，**仅包括后端管理系统**，基于SpringBoot实现，采用Docker容器化部署。该商城系统包括商品管理、订单管理、用户管理。
+基于Spring Boot的商城项目，包括商品管理、订单管理和用户管理，采用Docker容器化部署。商品管理包括商品检索、销量排行榜等，订单管理包括购物车、限时抢购、秒杀等，用户管理包括登录、注册等。
 
 ### 业务需求
 
@@ -20,10 +20,8 @@
   * 销量排行榜
     - [X]  Redis (Sorted Set)
       - Sorted Set存储<"product:" + "sales", product, sale>
-  * 分页查询
-    - [ ]  PageHelper插件
   * 商品检索
-    - [ ]  ElasticSearch
+    - [X]  ElasticSearch
 * 订单管理
   * 购物车增删改查
   * 订单增删改查
@@ -52,8 +50,6 @@
     - [X]  Spring Security (PasswordEncoder)
   * 手机号登录
     - [X]  Redis (过期键)
-  * 会话管理
-    - [ ]  Spring Session + Redis
 
 ### 技术选型
 
@@ -86,9 +82,9 @@
 │  │  │    ├─config                 # 配置文件
 │  │  │    ├─controller
 │  │  │    ├─dao
-│  │  │    ├─listener               # 监听器
+│  │  │    ├─domain
 │  │  │    ├─model
-│  │  │    ├─nosql.elasticsearch
+│  │  │    ├─repository
 │  │  │    └─service
 │  │  └─resources
 │  │      ├─application.yml
@@ -141,7 +137,6 @@
   - Redis的应用场景？
     - [X] 缓存
     - [X] 排行榜
-    - [ ] 会话存储
   - 内存管理？
     - [ ] 删除过期键 -> 定期删除
     - [ ] 内存淘汰机制 -> allkeys-lru

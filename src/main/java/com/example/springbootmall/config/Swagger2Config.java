@@ -60,7 +60,7 @@ public class Swagger2Config {
                 getContextByPath("/brand/.*"),
                 getContextByPath("/product/.*"),
                 getContextByPath("/order/.*"),
-                getContextByPath("/esProduct/*")
+                getContextByPath("/esProduct/.*")
         );
     }
 

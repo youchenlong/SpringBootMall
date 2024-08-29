@@ -49,6 +49,10 @@ public class EsProductServiceImpl implements EsProductService {
         }
         return result;
     }
+    @Override
+    public void deleteAll() {
+        esProductRepository.deleteAll();
+    }
 
     @Override
     public void delete(Long id) {

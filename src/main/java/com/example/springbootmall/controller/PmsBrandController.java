@@ -70,6 +70,7 @@ public class PmsBrandController {
     @ApiOperation("查询品牌信息")
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+//    @PreAuthorize("hasRole('ROLE_UNKNOWN')")
     public CommonResult<PmsBrand> getBrandById(@PathVariable("id") Long id) {
         PmsBrand brand = brandService.getBrandById(id);
         if (brand != null) {

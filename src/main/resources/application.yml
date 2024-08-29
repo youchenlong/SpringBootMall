@@ -105,3 +105,4 @@ secure:
       - /druid/**
       - /user/login
       - /user/register
+      - /testcase/**
