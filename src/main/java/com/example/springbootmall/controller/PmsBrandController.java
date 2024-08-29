@@ -24,6 +24,7 @@ public class PmsBrandController {
 
     @ApiOperation("添加品牌")
     @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public CommonResult<PmsBrand> addBrand(@RequestBody PmsBrand brand) {
         int count = brandService.addBrand(brand);
         if (count > 0) {
@@ -38,6 +39,7 @@ public class PmsBrandController {
 
     @ApiOperation("更新品牌信息")
     @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public CommonResult<PmsBrand> updateBrand(@PathVariable Long id, @RequestBody PmsBrand brand) {
         int count = brandService.updateBrand(id, brand);
         if (count > 0) {
@@ -52,6 +54,7 @@ public class PmsBrandController {
 
     @ApiOperation("删除品牌")
     @RequestMapping(value = "/remove/{id}", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public CommonResult<PmsBrand> removeBrandById(@PathVariable("id") Long id) {
         int count = brandService.removeBrandById(id);
         if (count > 0) {
@@ -66,6 +69,7 @@ public class PmsBrandController {
 
     @ApiOperation("查询品牌信息")
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public CommonResult<PmsBrand> getBrandById(@PathVariable("id") Long id) {
         PmsBrand brand = brandService.getBrandById(id);
         if (brand != null) {

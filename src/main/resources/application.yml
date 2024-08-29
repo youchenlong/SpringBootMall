@@ -84,9 +84,10 @@ redis:
       order: 3600
 
 jwt:
-  header: Authentication
-  secret: secret
-  expire: 3600
+  tokenHeader: Authorization # jwt存储的请求头
+  tokenHead: Bearer # jwt负载中拿到开头
+  secret: mySecret # jwt加解密使用的密钥
+  expire: 604800 # jwt的超期限时间(60x60x24)
 
 secure:
   ignored:

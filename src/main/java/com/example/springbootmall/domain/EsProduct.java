@@ -1,4 +1,4 @@
-package com.example.springbootmall.nosql.elasticsearch.document;
+package com.example.springbootmall.domain;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 @Document(indexName = "pms")
 @Setting(shards = 1, replicas = 0)
 public class EsProduct implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
     @Id
     private Long id;
     private Long brandId;

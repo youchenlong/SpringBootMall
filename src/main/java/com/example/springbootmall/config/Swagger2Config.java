@@ -59,7 +59,8 @@ public class Swagger2Config {
         return Arrays.asList(
                 getContextByPath("/brand/.*"),
                 getContextByPath("/product/.*"),
-                getContextByPath("/order/.*")
+                getContextByPath("/order/.*"),
+                getContextByPath("/esProduct/*")
         );
     }
 
