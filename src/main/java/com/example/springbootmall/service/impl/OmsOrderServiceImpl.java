@@ -2,9 +2,9 @@ package com.example.springbootmall.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.convert.Convert;
+import com.example.springbootmall.component.OrderDelayMessageProducer;
 import com.example.springbootmall.dao.OmsOrderDao;
 import com.example.springbootmall.dao.OmsOrderItemDao;
-import com.example.springbootmall.dao.PmsProductDao;
 import com.example.springbootmall.model.OmsOrder;
 import com.example.springbootmall.model.OmsOrderItem;
 import com.example.springbootmall.model.PmsProduct;
@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -29,17 +28,17 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     private OmsOrderDao omsOrderDao;
     @Autowired
     private OmsOrderItemDao omsOrderItemDao;
-//    @Autowired
-//    private PmsProductDao pmsProductDao;
     @Autowired
     private PmsProductService pmsProductService;
-
     @Autowired
     private RedisService redisService;
+    @Autowired
+    private OrderDelayMessageProducer orderDelayMessageProducer;
     @Value("${redis.key.prefix.order}")
     private String REDIS_KEY_PREFIX_ORDER;
     @Value("${redis.key.expire.order}")
     private int REDIS_KEY_EXPIRE_ORDER;
+
 
     private void freeRedis(OmsOrder order) {
         if (order == null) {
@@ -62,6 +61,8 @@ public class OmsOrderServiceImpl implements OmsOrderService {
             return 0;
         }
         freeRedis(order);
+        // order time out process
+        orderDelayMessageProducer.sendMessage(String.valueOf(order.getId()));
 
         return result;
     }
