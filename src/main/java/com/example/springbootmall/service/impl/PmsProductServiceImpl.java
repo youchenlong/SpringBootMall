@@ -165,4 +165,9 @@ public class PmsProductServiceImpl implements PmsProductService {
         }
         return null;
     }
+
+    @Override
+    public List<PmsProduct> simpleSearch(String keyword) {
+        return pmsProductDao.simpleSearch(keyword);
+    }
 }

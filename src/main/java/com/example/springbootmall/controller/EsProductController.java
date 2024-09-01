@@ -58,7 +58,7 @@ public class EsProductController {
     }
 
     @ApiOperation(value = "简单搜索")
-    @RequestMapping(value = "/sarch/simple", method = RequestMethod.GET)
+    @RequestMapping(value = "/simpleSearch", method = RequestMethod.GET)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public CommonResult<CommonPage<EsProduct>> search(@RequestParam(required = false) String keyword,
                                                       @RequestParam(required = false, defaultValue = "0") Integer pageNum,

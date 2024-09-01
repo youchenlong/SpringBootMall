@@ -11,4 +11,5 @@ public interface PmsProductService {
     PmsProduct getProductById(Long productId);
     List<PmsProduct> getAllProduct();
     List<PmsProduct> getAllProductBySale();
+    List<PmsProduct> simpleSearch(String keyword);
 }

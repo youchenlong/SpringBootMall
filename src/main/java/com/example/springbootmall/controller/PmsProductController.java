@@ -90,11 +90,26 @@ public class PmsProductController {
     public CommonResult<List<PmsProduct>> getAllProduct() {
         List<PmsProduct> productList = productService.getAllProduct();
         if (productList != null && !productList.isEmpty()) {
-            log.info("select all product successfully: {}", productList);
+            log.info("select all products successfully: {}", productList);
             return CommonResult.success(productList);
         }
         else {
-            log.info("select all product failed");
+            log.info("select all products failed");
+            return CommonResult.failed("failed");
+        }
+    }
+
+    @ApiOperation("简单搜索")
+    @RequestMapping(value = "/simpleSearch", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    public CommonResult<List<PmsProduct>> simpleSearch(@RequestParam("keyword") String keyword) {
+        List<PmsProduct> productList = productService.simpleSearch(keyword);
+        if (productList != null && !productList.isEmpty()) {
+            log.info("select relevant products successfully: {}", productList);
+            return CommonResult.success(productList);
+        }
+        else {
+            log.info("select relevant products failed");
             return CommonResult.failed("failed");
         }
     }

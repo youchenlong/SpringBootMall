@@ -13,4 +13,5 @@ public interface PmsProductDao {
     PmsProduct selectByPrimaryKey(Long id);
     List<PmsProduct> selectAll();
     List<PmsProduct> selectAllBySale();
+    List<PmsProduct> simpleSearch(String keyword);
 }

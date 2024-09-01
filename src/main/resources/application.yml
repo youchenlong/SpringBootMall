@@ -7,7 +7,6 @@ server:
       max: 200
       min-spare: 10
 
-
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/mall_tiny?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
@@ -49,16 +48,23 @@ spring:
     virtual-host: /mall
     username: mall
     password: mall
-    publisher-confirm-type: correlated
-    publisher-returns: true
+    connection-timeout: 1s
+    template:
+      retry:
+        enabled: true
+        max-attempts: 3 # 最大重试次数
+        multiplier: 1
+        initial-interval: 1000ms
+    publisher-confirm-type: correlated # 开启消息确认机制
+    publisher-returns: true # 开启消息返回
     listener:
       simple:
-        acknowledge-mode: manual
+        acknowledge-mode: manual # 手动确认
         retry:
-          initial-interval: 2000 # ms
           enabled: true
-          max-attempts: 3
-          multiplier: 2
+          max-attempts: 3 # 最大重试次数
+          multiplier: 1
+          initial-interval: 1000ms
   data:
     elasticsearch:
       repositories:
@@ -121,8 +127,6 @@ secure:
       - /druid/**
       - /user/login
       - /user/register
-      - /testcase/**
-      - /order/**
 
 rabbitmq:
   ORDER_DELAY_EXCHANGE_NAME: "order.delay.exchange"
@@ -132,4 +136,5 @@ rabbitmq:
   ORDER_DEAD_LETTER_QUEUE_NAME: "order.deadLetter.queue"
   ORDER_DEAD_LETTER_ROUTING_KEY: "order.deadLetter.routingKey"
   ORDER_DELAY_QUEUE_TTL: 3600000 # ms
+#  expiration: 3600000 # ms
   expiration: 10000 # ms

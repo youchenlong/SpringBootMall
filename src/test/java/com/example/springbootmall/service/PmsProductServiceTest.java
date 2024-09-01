@@ -70,4 +70,12 @@ class PmsProductServiceTest {
             log.info("getAllProductBySale id={}, result={}", pmsProduct.getId(), pmsProduct);
         }
     }
+
+    @Test
+    void simpleSearch() {
+        List<PmsProduct> pmsProducts = pmsProductService.simpleSearch("联想");
+        for (PmsProduct pmsProduct : pmsProducts) {
+            log.info("simpleSearch id={}, result={}", pmsProduct.getId(), pmsProduct);
+        }
+    }
 }

@@ -62,4 +62,18 @@
         from pms_product
         order by sale desc
     </select>
+    <select id="simpleSearch" resultType="com.example.springbootmall.model.PmsProduct">
+        select id,
+               brand_id,
+               name,
+               description,
+               keywords,
+               price,
+               sale,
+               stock
+        from pms_product
+        where name like concat('%', #{keyword}, '%')
+           or keywords like concat('%', #{keyword}, '%')
+           or description like concat('%', #{keyword}, '%')
+    </select>
 </mapper>
