@@ -22,6 +22,8 @@
       - Sorted Set存储<"product:" + "sales", product, sale>
   * 商品检索
     - [X]  ElasticSearch
+  * 商品推荐
+    - [X]  ElasticSearch
 * 订单管理
   * 购物车增删改查
   * 订单增删改查
@@ -38,7 +40,7 @@
   * 订单超时处理
     - [X]  ~~Redis (过期事件)~~
       - notify-keyspace-events Ex
-    - [ ]  RabbitMQ (消息TTL+死信Exchange)
+    - [X]  RabbitMQ (消息TTL+死信Exchange)
   * 限时抢购
     - [ ]  Redis (过期键) + RabbitMQ (消息TTL+死信Exchange)
   * 秒杀
@@ -154,16 +156,23 @@
 * RabbitMQ
   - RabbitMQ的应用场景？
   - 幂等性？
+    - [ ] 唯一ID
   - 可靠性？
+    - [X] 生产者：开启confirm模式
+    - [ ] 消息队列：持久化队列和消息
+    - [X] 消费者：手动ACK
   - 顺序性？
+    - [ ] 一个队列拆分为多个队列，每个队列一个消费者
   - 高可用？
     - [ ] 镜像集群
 * ElasticSearch
   - ElasticSearch的应用场景？
+    - [X] 商品模糊查询
+    - [X] 商品推荐
 * 高并发？
   - [X] 使用缓存
   - [ ] 优化数据库查询（SQL语句，索引）
-  - [ ] 使用消息队列解耦和异步处理
+  - [X] 使用消息队列解耦和异步处理
   - [ ] 限流与降级
   - [X] 优化数据库连接池
   - [X] 优化Tomcat线程池
