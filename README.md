@@ -2,7 +2,7 @@
 
 ### 项目介绍
 
-基于Spring Boot的商城项目，包括商品管理、订单管理和用户管理，采用Docker容器化部署。商品管理包括商品检索、销量排行榜等，订单管理包括购物车、限时抢购等，用户管理包括登录、注册等。
+基于Spring Boot的商城项目，包括商品管理、订单管理和用户管理，采用Docker容器化部署。商品管理包括商品检索、销量排行榜等，订单管理包括购物车、限时抢购等，用户管理包括认证和授权等。
 
 ### 业务需求
 
@@ -20,9 +20,7 @@
   * 销量排行榜
     - [X]  Redis (Sorted Set)
       - Sorted Set存储<"product:" + "sales", product, sale>
-  * 商品检索
-    - [X]  ElasticSearch
-  * 商品推荐
+  * 商品检索和推荐
     - [X]  ElasticSearch
 * 订单管理
   * 购物车增删改查
@@ -48,8 +46,8 @@
     - [ ]  超卖？
 * 用户管理
   * 用户增删改查
-  * 账号密码登录
-    - [X]  Spring Security (PasswordEncoder)
+  * 认证和授权
+    - [X]  Spring Security
   * 手机号登录
     - [X]  Redis (过期键)
 
@@ -63,7 +61,6 @@
 | Redis | 内存数据存储 | [https://redis.io/](https://redis.io/) |
 | RabbitMQ | 消息队列 | [https://www.rabbitmq.com/](https://www.rabbitmq.com/) |
 | ElasticSearch | 搜索引擎 | [https://www.elastic.co/elasticsearch](https://www.elastic.co/elasticsearch) |
-| MongoDB | NoSQL数据库 | [https://www.mongodb.com/](https://www.mongodb.com/) |
 | Docker | 容器 | [https://www.docker.com/](https://www.docker.com/) |
 | Lombok | Java语言增强库 | [https://projectlombok.org/](https://projectlombok.org/) |
 | Hutool | Java工具类库 | [https://hutool.cn/](https://hutool.cn/) |
@@ -89,8 +86,8 @@
 │  │  │    ├─repository
 │  │  │    └─service
 │  │  └─resources
-│  │      ├─application.yml
-│  │      └─dao
+│  │      ├─dao
+│  │      └─application.yml
 │  └─test
 ├─.gitignore
 ├─Dockerfile
@@ -145,7 +142,7 @@
   - 持久化？
     - [X] AOF
   - 一致性？
-    - [X] Cache Aside Pattern -> 异步重试(消息队列)
+    - [X] Cache Aside Pattern
   - 缓存穿透？
     - [X] 布隆过滤器
   - 缓存雪崩？
